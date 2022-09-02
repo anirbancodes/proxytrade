@@ -1,0 +1,162 @@
+<!--
+*
+*
+*
+*
+*                    * This is a product of Quantm Capital LLP & its associates, companies, sites, etc.
+*                    *
+*                    * All of the content including but not limited to the design & data in this site is copyrighted.
+*                    * 
+*                    * By Viewing this source code, you agree to our Terms of Use & Privacy Policy, which is available on:
+*                    *
+*                    * https://refer.quantcap.tech/tnc
+*                    *
+*                    * No legal criminal, civil or family action and harm can be caused to the owning entities including but not limited to
+*                    *
+*                    * Anirban Deb and Quantum Capital LLP in any means whatsoever.
+*                    *
+*                    * Your further viewing of this site or code means you agree to accept the above terms.
+*
+*
+*
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trade x QuantCap</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+
+  <body>
+    <div class="page-header">
+      <h2>proxytrade</h2>
+      <div class="links">
+        <p><a class="hov-red" href="/signup/">signup</a></p>
+        <p><a class="hov-red" href="/signup/">faq</a></p>
+      </div>
+    </div>
+
+    <div class="card-1" id="login_card">
+      <div class="login">
+        <div class="login-input">
+          <input type="text" placeholder="email" id="email" />
+          &nbsp;&nbsp;
+          <input type="text" placeholder="password" id="password" />
+        </div>
+        <a id="loginBtn" class="btn">Log In</a>
+      </div>
+    </div>
+
+    <div class="card" id="user_card">
+      <div class="user">
+        <div>
+          <p id="user_email"></p>
+          <p id="user_margin">Cash Avl ₹</p>
+        </div>
+        <a id="logoutBtn" class="btn">Log Out</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="inner-card">
+        <h3>NEW ORDER</h3>
+        <div class="inner-card-body">
+          <!-- Search scrip starts -->
+          <div class="scriplist">
+            <div class="search-box">
+              <i class="fa fa-search icon"></i>
+              <input
+                type="text"
+                class="input-field"
+                placeholder="Search eg: tcs, infy..."
+                id="place_order_scrip"
+              />
+            </div>
+
+            <div class="autocom-box">
+              <!-- insert sugg list  -->
+            </div>
+          </div>
+          <script src="./js/search.js"></script>
+
+          <div id="hacker-list">
+            <ul class="list"></ul>
+          </div>
+
+          <div class="place-order-details">
+            <!-- Type:
+            <input type="radio" name="order-category" value="mis" /> MIS
+            <input type="radio" name="order-category" value="cnc" /> CNC
+            <br /><br />
+            Order-type:
+            <input type="radio" name="order-type" value="market" /> MO
+            <input type="radio" name="order-type" value="limit" /> LO
+            <input type="radio" name="order-type" value="stop-limit" /> SL
+            <input type="radio" name="order-type" value="stop-market" />
+            SL-M<br /><br /> -->
+            Qty:
+            <input
+              id="place_order_qty"
+              class="place-order-qty"
+              placeholder="0"
+              type="number"
+            />&nbsp; Price:
+            <input
+              id="place_order_price"
+              class="place-order-price"
+              placeholder="0"
+              type="number"
+            />
+          </div>
+          <div class="buttons">
+            <button id="place_buy" class="buy-sell">Buy</button>
+            &nbsp;
+            <button id="place_sell" class="buy-sell">Sell</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- --->
+
+    <div class="card" id="holding_section">
+      <div class="inner-card">
+        <h3>POSITIONS/HOLDINGS</h3>
+        <div class="inner-card-body" id="holding_add_cards">
+          <!--  --->
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="order_section">
+      <div class="inner-card">
+        <h3>ORDERS</h3>
+        <div class="inner-card-body" id="order_add_cards">
+          <!--   --->
+        </div>
+      </div>
+    </div>
+
+    <div class="copyright">
+      <a href="https://quantcap.tech" class="copyright-text"
+        >&copy; Quantum Capital LLP, 2022</a
+      >
+    </div>
+
+    <script src="js/fb_api.js"></script>
+    <script src="js/style.js"></script>
+    <script type="module" src="js/details.js"></script>
+    <script type="module" src="js/signin.js"></script>
+    <script type="module" src="js/onload_fb.js"></script>
+    <script type="module" src="js/newOrder.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
+  </body>
+</html>

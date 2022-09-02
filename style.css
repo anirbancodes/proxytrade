@@ -1,0 +1,320 @@
+@import url("https://fonts.googleapis.com/css2?family=Hubballi&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=League+Spartan&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap");
+::-webkit-scrollbar {
+  width: 18px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #008684;
+  border-radius: 20px;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #000000;
+}
+
+html {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  /* background-image: linear-gradient(
+      70.5deg,
+      rgba(0, 81, 80, 1) 23.5%,
+      rgba(0, 134, 132, 1) 91.3%
+    ); */
+  background-color: #f5f5f5;
+  color: rgba(0, 81, 80, 1);
+  font-weight: 400;
+  font-family: "Hubballi";
+  /* font-family: 'Josefin Sans', sans-serif; */
+  /* font-family: 'League Spartan', sans-serif; */
+  /* font-family: 'Roboto Mono', monospace; */
+}
+a {
+  text-decoration: none;
+  color: #008684;
+}
+.page-header {
+  padding: 0 2vw;
+  display: flex;
+  justify-content: space-between;
+  color: rgb(0, 128, 100);
+}
+.page-header > h2 {
+  text-decoration: overline;
+  font-size: 25px;
+  font-weight: 500;
+}
+.page-header h2:hover {
+  color: orangered;
+}
+.links {
+  display: flex;
+  align-items: center;
+  width: 30vw;
+  justify-content: space-around;
+  cursor: pointer;
+}
+.links > a:hover {
+  color: orangered;
+  /* font-size: large; */
+}
+.hov-red:hover {
+  color: orangered !important;
+}
+.card-1 {
+  padding: 2vh 20vw;
+}
+.login {
+  background-color: #f5f5f5;
+
+  border-radius: 60px;
+  color: rgba(0, 81, 80, 1);
+  padding: 2vh 2vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.login-input {
+  padding-top: 1vh;
+}
+.login-input > input {
+  width: 20vw;
+  padding: 10px 15px;
+  text-align: center;
+  background-image: linear-gradient(
+    70.5deg,
+    rgba(0, 81, 80, 1) 23.5%,
+    rgba(0, 134, 132, 1) 91.3%
+  );
+  color: rgb(255, 202, 183);
+  border-style: none;
+  border-radius: 25px;
+}
+.login-input > input::placeholder {
+  color: rgb(255, 202, 183);
+}
+.login-input > input:focus {
+  outline: none;
+}
+.btn {
+  margin-top: 20px;
+  padding: 10px 30px;
+  background-image: linear-gradient(
+    70.5deg,
+    rgba(0, 81, 80, 1) 23.5%,
+    rgba(0, 134, 132, 1) 91.3%
+  );
+  color: rgb(255, 202, 183);
+  border-radius: 25px;
+  cursor: pointer;
+}
+.btn:hover {
+  background-image: linear-gradient(
+    70.5deg,
+    rgb(230, 57, 72) 23.5%,
+    rgb(240, 167, 32) 91.3%
+  );
+  color: white;
+}
+.card {
+  padding: 2vh 4vw;
+}
+.user {
+  /* background-image: linear-gradient(
+      70.5deg,
+      rgba(0, 81, 80, 1) 23.5%,
+      rgba(0, 134, 132, 1) 91.3%
+    ); */
+  background-color: #f5f5f5;
+  /* color: white; */
+  color: rgba(0, 81, 80, 1);
+  padding: 1vh 4vw 3vh 4vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 45px;
+}
+.inner-card {
+  background-color: #e5e5e5;
+  background-image: linear-gradient(
+    70.5deg,
+    rgba(0, 81, 80, 1) 23.5%,
+    rgba(0, 134, 132, 1) 91.3%
+  );
+  border-radius: 30px;
+  padding: 2vh 4vw 5vh 4vw;
+}
+.inner-card-body {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+}
+.inner-card h3 {
+  color: white;
+  font-family: "Josefin Sans", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  /* font-family: 'League Spartan', sans-serif; */
+  /* font-family: 'Roboto Mono', monospace; */
+}
+
+.search-box {
+  padding: 2vh 3vh;
+  display: flex;
+  align-items: center;
+}
+.search-box > input {
+  width: 15vw;
+  padding: 2vh 3vw;
+  border-radius: 25px;
+  outline: none;
+  text-align: center;
+  border-style: none;
+  color: #008684 !important;
+}
+.search-box > input::placeholder {
+  color: #008684;
+}
+
+.search-box i {
+  position: absolute;
+}
+.icon {
+  padding: 40px 0 40px 40px;
+  min-width: 40px;
+  color: #008684;
+}
+
+.sugg-item {
+  margin-bottom: 5px;
+  background-color: #0b5f5e;
+  border-radius: 4px;
+  padding: 6px 10px;
+}
+.place-order-details > input {
+  width: 7vw;
+  height: 6vh;
+  border-radius: 25px;
+  outline: none;
+  text-align: center;
+  border-style: none;
+  color: #008684 !important;
+}
+.place-order-details > input::placeholder {
+  color: #008684;
+}
+.buttons {
+  margin-top: 4vh;
+}
+.buttons > button {
+  background-color: white;
+  padding: 2vh 3vw;
+  outline: none;
+  text-align: center;
+  border-style: none;
+  color: #008684;
+  border-radius: 25px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+.buttons > button:hover {
+  background-image: linear-gradient(
+    70.5deg,
+    rgb(230, 57, 72) 23.5%,
+    rgb(240, 167, 32) 91.3%
+  );
+  color: white;
+}
+.holding-status {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+.holding-card {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 1vh 2vw;
+  /* background-image: linear-gradient(
+    70.5deg,
+    rgba(0, 81, 80, 1) 23.5%,
+    rgba(0, 134, 132, 1) 91.3%
+  ); */
+  background-color: white;
+  border-radius: 20px;
+  color: #008684;
+}
+.red {
+  color: rgb(238, 51, 88);
+}
+.green {
+  color: #008684;
+}
+.holding-scrip {
+  display: flex;
+  justify-content: space-between;
+}
+.holding-scrip-status {
+  display: flex;
+  justify-content: space-between;
+  margin-top: -20px;
+}
+
+@media only screen and (min-width: 700px) {
+  .holding-status {
+    width: 85%;
+  }
+  .holding-card {
+    width: 70%;
+  }
+}
+@media only screen and (max-width: 700px) {
+  .login-input {
+    display: flex;
+  }
+  .card {
+    padding: 1.5vh 0vw;
+  }
+  .search-box > input {
+    width: 60vw;
+    padding: 1.8vh 3vw;
+  }
+  .place-order-details > input {
+    width: 20vw;
+    height: 5vh;
+  }
+  .buttons > button {
+    padding: 1.5vh 8vw;
+  }
+}
+
+.copyright {
+  padding-top: 40px;
+  text-align: center;
+}
+.copyright-text {
+  text-decoration: none;
+  color: #008684;
+}
+.copyright-text:hover {
+  color: orangered;
+  cursor: pointer;
+}
+#user_card,
+#holding_section,
+#order_section {
+  display: none;
+}
