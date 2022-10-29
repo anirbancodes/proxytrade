@@ -45,7 +45,7 @@ logoutBtn.addEventListener("click", (e) => {
 
 function showUserInfo(email, margin) {
   user_email.textContent = email;
-  user_margin.textContent = margin;
+  user_margin.textContent = "₹ " + margin;
 }
 
 import {
@@ -68,15 +68,26 @@ export async function showHoldings(email) {
     showUserInfo(email, margin);
     holding_info(inv);
     let keysH = Object.keys(holding).sort();
+    let currentTot = 0,
+      plTot = 0;
     keysH.forEach((scrip) => {
       let [qty, avg] = holding[scrip];
+      currentTot += qty * 2000;
       showEachHolding(scrip, qty, avg);
     });
+    document.getElementById("holding_totCurrent").innerHTML =
+      "Current ₹ " + currentTot;
+    document.getElementById("holding_totpnl").innerHTML = inv - currentTot;
+    let pnlpcnt = String(((currentTot - inv) / inv) * 100);
+    document.getElementById("holding_totpnlprcnt").innerHTML =
+      "(" + pnlpcnt.slice(0, pnlpcnt.indexOf(".") + 2);
+
     order_add_cards.innerHTML = "";
     if (orders) {
       orders.forEach((order) => {
         let name = Object.keys(order)[0];
         let [type, qty, avg, time] = order[name];
+
         showEachOrder(name, type, qty, avg, time);
       });
     }
@@ -91,10 +102,10 @@ function holding_info(inv) {
 <p id="holding_totInvested">Invested ₹ ` +
     inv +
     `</p>
-<p id="holding_totCurrent">Current ₹ 0</p>
+<p id="holding_totCurrent">Current ₹ </p>
 <p>
-  P&L: <span id="holding_totpnl">0</span>(
-  <span id="holding_totpnlprcnt">0</span>%)
+  P&L: <span id="holding_totpnl"></span>
+  <span id="holding_totpnlprcnt"></span>%)
 </p>
 </div>`;
 }
