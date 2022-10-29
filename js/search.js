@@ -8,6 +8,8 @@ let webLink;
 
 // if user press any key and release
 inputBox.onkeyup = (e) => {
+  document.getElementById("sugg-list").style.display = "flex";
+  document.getElementById("sugg-list").style.flexDirection = "column";
   let userData = e.target.value; //user enetered data
   let emptyArray = [];
   if (userData) {
@@ -45,6 +47,7 @@ function select(element) {
   //    linkTag.setAttribute("href", webLink);
   //    linkTag.click();
   //  };
+  document.getElementById("sugg-list").style.display = "none";
   searchWrapper.classList.remove("active");
 }
 
