@@ -77,7 +77,7 @@ export async function showHoldings(email) {
     });
     document.getElementById("holding_totCurrent").innerHTML =
       "Current ₹ " + currentTot;
-    document.getElementById("holding_totpnl").innerHTML = inv - currentTot;
+    document.getElementById("holding_totpnl").innerHTML = currentTot - inv;
     let pnlpcnt = String(((currentTot - inv) / inv) * 100);
     document.getElementById("holding_totpnlprcnt").innerHTML =
       "(" + pnlpcnt.slice(0, pnlpcnt.indexOf(".") + 2);
