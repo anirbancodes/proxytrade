@@ -192,6 +192,36 @@ a {
   /* font-family: 'League Spartan', sans-serif; */
   /* font-family: 'Roboto Mono', monospace; */
 }
+.search-icon {
+  margin-left: 40px;
+  position: absolute;
+}
+.search-scrip {
+  width: 50vw;
+  font-family: "Josefin Sans";
+  background-color: white;
+  color: rgb(216, 152, 32);
+  outline: none;
+  border: none;
+  border-radius: 15px;
+  font-weight: 300;
+  font-size: 14px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  /* color: #008684; */
+}
+.search-scrip:active,
+.search-scrip:hover {
+  width: 50vw;
+  background-color: white;
+  color: rgb(216, 152, 32);
+
+  outline: none;
+  border: none;
+  border-radius: 15px;
+  font-weight: 300;
+  cursor: pointer;
+}
 
 .search-box {
   padding: 2vh 3vh;
@@ -299,6 +329,14 @@ a {
 }
 
 @media only screen and (min-width: 700px) {
+  .search-scrip {
+    width: 20vw;
+  }
+  .search-scrip:hover,
+  .search-scrip:active,
+  .search-scrip:focus {
+    width: 20vw;
+  }
   .card-1 {
     padding: 1vh 15vw;
   }

@@ -1,5 +1,6 @@
-async function fetchPrice(scrip) {
+async function getPrice(scrip) {
   let bsecode = list[scrip][2];
+  let price;
   console.log(
     "https://cloud.iexapis.com/stable/stock/" +
       bsecode +
@@ -11,12 +12,11 @@ async function fetchPrice(scrip) {
       "-IB/quote?token=pk_36243f0e57234936ba227d8b70a2481e&format=json"
   )
     .then((response) => response.json())
-    .then(
-      (data) =>
-        (document.getElementById("place_order_price").innerText =
-          data.latestPrice)
-    );
+    .then((data) => (price = data.latestPrice));
+  return price;
 }
+
+export { getPrice };
 
 let list = {
   "20MICRONS": ["EQ", "INE144J01027", "533022"],

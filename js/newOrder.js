@@ -29,7 +29,7 @@ place_buy.addEventListener("click", async (e) => {
     document.getElementById("place_order_qty").value
   );
   let place_order_price = parseFloat(
-    document.getElementById("place_order_price").value
+    document.getElementById("place_order_price").innerText
   );
   let order_valid = checkOrderValid(
     place_order_scrip,
@@ -95,7 +95,7 @@ place_sell.addEventListener("click", async (e) => {
     document.getElementById("place_order_qty").value
   );
   let place_order_price = parseFloat(
-    document.getElementById("place_order_price").value
+    document.getElementById("place_order_price").innerText
   );
   let order_valid = checkOrderValid(
     place_order_scrip,

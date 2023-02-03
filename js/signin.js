@@ -56,6 +56,8 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-
 
 const db = getFirestore(app);
 
+import { getPrice } from "./getPrice.js";
+
 export async function showHoldings(email) {
   const ref = doc(db, "users", email);
   const docSnap = await getDoc(ref);
@@ -109,12 +111,14 @@ function holding_info(inv) {
 </p>
 </div>`;
 }
-function showEachHolding(scrip, qty, avg) {
+async function showEachHolding(scrip, qty, avg) {
   //fetch curr
-  let ltp = 2000,
+  let ltp = await getPrice(scrip);
+  let //ltp = 2000,
     inv = qty * avg,
     pnl = (ltp - avg) * qty,
     pnlpct = ((pnl / inv) * 100).toFixed(2);
+
   holding_add_cards.innerHTML +=
     `<div class="holding-card ` +
     (pnl >= 0 ? `green` : `red`) +
@@ -127,7 +131,7 @@ function showEachHolding(scrip, qty, avg) {
     ltp +
     `</p>
     <p>₹ ` +
-    pnl +
+    pnl.toFixed(2) +
     ` (` +
     pnlpct +
     `%)</p>
