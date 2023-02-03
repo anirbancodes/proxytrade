@@ -39,6 +39,23 @@ html {
   /* font-family: 'League Spartan', sans-serif; */
   /* font-family: 'Roboto Mono', monospace; */
 }
+body {
+  background-color: #f5f5f5;
+  padding: 25px 8px;
+}
+a,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+span,
+input,
+select,
+option {
+  font-family: "Hubballi";
+}
 a {
   text-decoration: none;
   color: #008684;
@@ -73,10 +90,10 @@ a {
 }
 .card-1 {
   padding: 2vh 20vw;
+  justify-content: center;
 }
 .login {
   background-color: #f5f5f5;
-
   border-radius: 60px;
   color: rgba(0, 81, 80, 1);
   padding: 2vh 2vw;
@@ -88,7 +105,8 @@ a {
   padding-top: 1vh;
 }
 .login-input > input {
-  width: 20vw;
+  width: 30vw;
+  height: 35px;
   padding: 10px 15px;
   text-align: center;
   background-image: linear-gradient(
@@ -108,7 +126,10 @@ a {
 }
 .btn {
   margin-top: 20px;
-  padding: 10px 30px;
+  padding: 5px 30px 5px 30px;
+  /* height: 35px; */
+  text-align: center;
+  color: wheat !important;
   background-image: linear-gradient(
     70.5deg,
     rgba(0, 81, 80, 1) 23.5%,
@@ -128,6 +149,8 @@ a {
 }
 .card {
   padding: 2vh 4vw;
+  background-color: #f5f5f5;
+  border: none;
 }
 .user {
   /* background-image: linear-gradient(
@@ -152,7 +175,7 @@ a {
     rgba(0, 134, 132, 1) 91.3%
   );
   border-radius: 30px;
-  padding: 2vh 4vw 5vh 4vw;
+  padding: 5vh 4vw 5vh 4vw;
 }
 .inner-card-body {
   display: flex;
@@ -176,9 +199,10 @@ a {
   align-items: center;
 }
 .search-box > input {
-  width: 15vw;
+  width: 25vw;
   padding: 2vh 3vw;
   border-radius: 25px;
+  height: 35px;
   outline: none;
   text-align: center;
   border-style: none;
@@ -220,7 +244,7 @@ a {
 }
 .buttons > button {
   background-color: white;
-  padding: 2vh 3vw;
+  padding: 1vh 3vw;
   outline: none;
   text-align: center;
   border-style: none;
@@ -237,6 +261,7 @@ a {
   );
   color: white;
 }
+
 .holding-status {
   display: flex;
   width: 100%;
@@ -247,7 +272,7 @@ a {
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding: 1vh 2vw;
+  padding: 1vh 1vw;
   /* background-image: linear-gradient(
     70.5deg,
     rgba(0, 81, 80, 1) 23.5%,
@@ -274,6 +299,9 @@ a {
 }
 
 @media only screen and (min-width: 700px) {
+  .card-1 {
+    padding: 1vh 15vw;
+  }
   .holding-status {
     width: 85%;
   }
@@ -298,6 +326,27 @@ a {
   }
   .buttons > button {
     padding: 1.5vh 8vw;
+  }
+  .holding-card {
+    display: flex;
+    justify-content: center;
+    padding: 1vh 2vw;
+  }
+  .holding-scrip {
+    display: flex;
+    justify-content: space-between;
+  }
+  .order-add_cards > .holding-card > .holding-scrip > p {
+    margin-bottom: 0;
+  }
+  .order-add_cards > .holding-card > .holding-scrip {
+    padding: 1vh 2vw 0 2vw;
+    display: flex;
+    justify-content: center;
+  }
+  .holding-add_cards > .holding-card > .holding-scrip {
+    margin-bottom: 5px;
+    padding: 1vh 4vw;
   }
 }
 
