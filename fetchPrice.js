@@ -11,11 +11,32 @@ async function fetchPrice(scrip) {
       "-IB/quote?token=pk_36243f0e57234936ba227d8b70a2481e&format=json"
   )
     .then((response) => response.json())
-    .then(
-      (data) =>
-        (document.getElementById("place_order_price").innerText =
-          data.latestPrice)
-    );
+    .then((data) => {
+      document.getElementById(
+        "xxx"
+      ).innerHTML = `&nbsp; <span>Price:</span>&nbsp;
+            <!-- <input
+              id="place_order_price"
+              class="place-order-price"
+              placeholder="0"
+              type="number"
+            /> -->
+            <span
+              style="
+                padding: 10px 20px;
+                background-color: white;
+                border-radius: 50px;
+                color: rgb(225, 169, 64);
+              "
+              id="place_order_price"
+            ></span>`;
+
+      document.getElementById("scrip_name").innerText =
+        `BSE: ` + data.companyName;
+      document.getElementById("52H").innerText = `52H: ` + data.week52High;
+      document.getElementById("52L").innerText = `52L: ` + data.week52Low;
+      document.getElementById("place_order_price").innerText = data.latestPrice;
+    });
 }
 
 let list = {

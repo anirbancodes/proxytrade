@@ -170,7 +170,7 @@
             <ul class="list"></ul>
           </div> -->
 
-          <div class="place-order-details">
+          <div class="place-order-details new-order-inner-card-body">
             <!-- Type:
             <input type="radio" name="order-category" value="mis" /> MIS
             <input type="radio" name="order-category" value="cnc" /> CNC
@@ -182,29 +182,24 @@
             <input type="radio" name="order-type" value="stop-market" />
             SL-M<br /><br /> -->
 
-            <div class="details_iex">kj</div>
+            <p style="margin-bottom: 5px" id="scrip_name"></p>
+            <div
+              class="details_iex"
+              style="display: flex; justify-content: space-between"
+            >
+              <p id="52H"></p>
+              <p id="52L"></p>
+            </div>
             <span>Qty:</span>
+
             <input
               id="place_order_qty"
               class="place-order-qty"
               placeholder="0"
               type="number"
-            />&nbsp; <span>Price:</span>&nbsp;
-            <!-- <input
-              id="place_order_price"
-              class="place-order-price"
-              placeholder="0"
-              type="number"
-            /> -->
-            <span
-              style="
-                padding: 10px 20px;
-                background-color: white;
-                border-radius: 50px;
-                color: rgb(225, 169, 64);
-              "
-              id="place_order_price"
-            ></span>
+            />
+
+            <span id="xxx"></span>
           </div>
           <div class="buttons">
             <button id="place_buy" class="buy-sell">Buy</button>
