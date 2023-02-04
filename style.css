@@ -378,6 +378,10 @@ a {
   .login-input {
     display: flex;
   }
+  .login-input > input {
+    width: 40vw;
+    height: 35px;
+  }
   .card {
     padding: 1.5vh 0vw;
   }
