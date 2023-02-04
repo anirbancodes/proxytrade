@@ -12,9 +12,34 @@ async function fetchPrice(scrip) {
   )
     .then((response) => response.json())
     .then((data) => {
-      document.getElementById(
-        "xxx"
-      ).innerHTML = `&nbsp; <span>Price:</span>&nbsp;
+      document.getElementById("xx2").innerHTML = `
+
+      <div id="fc">
+      <p style="margin-bottom: 5px" id="scrip_name"></p>
+      <div
+        class="details_iex"
+        style="display: flex; justify-content: space-between"
+      >
+        <p id="52H"></p>
+        <p id="52L"></p>
+      </div>
+    </div>`;
+
+      document.getElementById("xx2").innerHTML += `
+      <div class="fr">
+      <span class="pc">Qty:</span>
+
+      <input
+        id="place_order_qty"
+        class="place-order-qty"
+        placeholder="0"
+        type="number"
+      />
+    
+      <span id="xxx"></span>`;
+      document.getElementById("xxx").innerHTML = `
+      
+      &nbsp; <span>Price:</span>&nbsp;
             <!-- <input
               id="place_order_price"
               class="place-order-price"
@@ -29,7 +54,8 @@ async function fetchPrice(scrip) {
                 color: rgb(225, 169, 64);
               "
               id="place_order_price"
-            ></span>`;
+            ></span>
+            </div>`;
 
       document.getElementById("scrip_name").innerText =
         `BSE: ` + data.companyName;

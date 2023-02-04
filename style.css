@@ -269,6 +269,14 @@ a {
 .place-order-details > input::placeholder {
   color: #008684;
 }
+.place-order-qty {
+  width: 80px;
+  padding: 5px 10px;
+  border-radius: 25px;
+  text-align: center;
+  border: none;
+  outline: none;
+}
 .buttons {
   margin-top: 4vh;
 }
@@ -352,10 +360,21 @@ a {
     display: none;
   }
   .new-order-inner-card-body {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+
     padding-left: 10vw;
     padding-right: 10vw;
   }
-
+  .fc {
+    display: flex;
+    flex-direction: column;
+  }
+  .fr {
+    display: flex;
+    flex-direction: row;
+  }
   .login-input {
     display: flex;
   }
@@ -366,9 +385,8 @@ a {
     width: 60vw;
     padding: 1.8vh 3vw;
   }
-  .place-order-details > input {
-    width: 20vw;
-    height: 5vh;
+  .place-order-qty {
+    margin-top: -5px;
   }
   .buttons > button {
     padding: 1.5vh 8vw;
