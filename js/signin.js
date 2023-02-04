@@ -45,7 +45,7 @@ logoutBtn.addEventListener("click", (e) => {
 
 function showUserInfo(email, margin) {
   user_email.textContent = email;
-  user_margin.textContent = "₹ " + margin;
+  user_margin.textContent = "₹ " + margin.toFixed(2);
 }
 
 import {
@@ -127,10 +127,10 @@ async function showEachHolding(scrip, qty, avg) {
     <p>` +
     scrip +
     `</p>
-    <p>LTP ₹ ` +
+    <p>LTP <span class="pc">₹</span> ` +
     ltp +
     `</p>
-    <p>₹ ` +
+    <p><span class="pc">₹</span> ` +
     pnl.toFixed(2) +
     ` (` +
     pnlpct +
@@ -140,10 +140,10 @@ async function showEachHolding(scrip, qty, avg) {
     <p>Qty: ` +
     qty +
     `</p>
-    <p>Avg: ₹ ` +
+    <p>Avg: <span class="pc">₹</span> ` +
     avg +
     `</p>
-    <p>Invested: ₹ ` +
+    <p>Invested: <span class="pc">₹</span> ` +
     inv +
     `</p>
   </div>
@@ -157,14 +157,19 @@ function showEachOrder(name, type, qty, avg, time) {
     `">
   <div class="holding-scrip">
     <p>` +
-    (type == "b" ? `BUY` : `SELL`) +
+    (type == "b"
+      ? `<span class="pc">BUY</span>
+    <span class="mob">B</span>
+    `
+      : `<span class="pc">SELL</span>
+    <span class="mob">S</span>`) +
     `</p>
     <p>` +
     name +
     `</p>
-    <p>Qty ` +
+    <p><span class="pc">Qty</span> ` +
     qty +
-    ` @ ₹ ` +
+    ` @ <span class="pc">₹</span> ` +
     avg +
     `</p>
     <p>` +

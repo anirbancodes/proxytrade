@@ -348,6 +348,9 @@ a {
   }
 }
 @media only screen and (max-width: 700px) {
+  .pc {
+    display: none;
+  }
   .login-input {
     display: flex;
   }
