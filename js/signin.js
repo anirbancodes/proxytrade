@@ -57,6 +57,7 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-
 const db = getFirestore(app);
 
 import { getPrice } from "./getPrice.js";
+import { fetchPrice } from "../fetchPrice.js";
 
 export async function showHoldings(email) {
   const ref = doc(db, "users", email);
@@ -113,7 +114,7 @@ function holding_info(inv) {
 }
 async function showEachHolding(scrip, qty, avg) {
   //fetch curr
-  let ltp = await getPrice(scrip);
+  let ltp = await fetchPrice(scrip);
   let //ltp = 2000,
     inv = qty * avg,
     pnl = (ltp - avg) * qty,

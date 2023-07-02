@@ -1,18 +1,101 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-app.js";
+import {
+  getFirestore,
+  getDoc,
+  doc,
+} from "https://www.gstatic.com/firebasejs/9.6.9/firebase-firestore.js";
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBhn1pgMa_mS4wqVrn8lwYiIrRZjkWANWo",
+  authDomain: "qc-invest.firebaseapp.com",
+  databaseURL:
+    "https://qc-invest-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "qc-invest",
+  storageBucket: "qc-invest.appspot.com",
+  messagingSenderId: "936010698151",
+  appId: "1:936010698151:web:bf6e4b103133588a1bfa82",
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
 async function fetchPrice(scrip) {
-  let bsecode = list[scrip][2];
-  console.log(
-    "https://cloud.iexapis.com/stable/stock/" +
-      bsecode +
-      "-IB/quote?token=pk_36243f0e57234936ba227d8b70a2481e&format=json"
-  );
-  await fetch(
-    "https://cloud.iexapis.com/stable/stock/" +
-      bsecode +
-      "-IB/quote?token=pk_36243f0e57234936ba227d8b70a2481e&format=json"
-  )
-    .then((response) => response.json())
-    .then((data) => {
-      document.getElementById("xx2").innerHTML = `
+  // let bsecode = list[scrip][2];
+  // console.log(
+  //   "https://cloud.iexapis.com/stable/stock/" +
+  //     bsecode +
+  //     "-IB/quote?token=pk_36243f0e57234936ba227d8b70a2481e&format=json"
+  // );
+  // await fetch(
+  //   "https://cloud.iexapis.com/stable/stock/" +
+  //     bsecode +
+  //     "-IB/quote?token=pk_36243f0e57234936ba227d8b70a2481e&format=json"
+  // )
+  //   .then((response) => response.json())
+  //   .then((data) =>
+
+  const b = new Date();
+  const utc = b.getTime() + b.getTimezoneOffset() * 60000;
+  const now = new Date(utc + 3600000 * "+5.5");
+  let yy = now.getFullYear(),
+    mm = now.getMonth() + 1,
+    dd = now.getDate();
+  let scripData = {};
+  let smm = mm,
+    sdd = dd;
+  console.log(yy, mm, dd);
+  for (let flag = false; flag != true; ) {
+    (smm = mm), (sdd = dd);
+    if (mm < 10) smm = "0" + smm;
+    if (dd < 10) sdd = "0" + sdd;
+    const scripRef = doc(db, "eod", scrip, "" + yy, "" + smm);
+    scripData = await getDoc(scripRef);
+    if (!scripData.exists()) {
+      mm--;
+      dd = 31;
+    } else {
+      if (scripData.data()[sdd] == null) {
+        if (dd > 1) dd--;
+        if (dd == 1) {
+          dd = 31;
+          mm--;
+        }
+      } else {
+        flag = true;
+        smm = mm;
+        sdd = dd;
+        if (mm < 10) smm = "0" + smm;
+        if (dd < 10) sdd = "0" + sdd;
+        console.log(smm, sdd);
+        break;
+      }
+    }
+    console.log(smm, sdd);
+  }
+
+  let closeP = scripData.data()[sdd][3];
+  return closeP;
+
+  // document.getElementById("52H").innerText = `52H: ` + data.week52High;
+  // document.getElementById("52L").innerText = `52L: ` + data.week52Low;
+  //  });
+}
+
+export { fetchPrice };
+
+/*Hi*/
+
+let symbols = [...document.getElementsByClassName("dropdown-item")];
+symbols.forEach((sym) => {
+  sym.addEventListener("click", async (e) => {
+    let closeP = await fetchPrice(sym.innerHTML);
+    const scripRef = doc(db, "eod", sym.innerHTML);
+    let scripData = await getDoc(scripRef);
+    let data;
+    if (scripData.exists() && scripData.data().data != null)
+      data = scripData.data().data;
+    document.getElementById("xx2").innerHTML = `
 
       <div id="fc">
       <p style="margin-bottom: 5px" id="scrip_name"></p>
@@ -23,9 +106,18 @@ async function fetchPrice(scrip) {
         <p id="52H"></p>
         <p id="52L"></p>
       </div>
+        <p id="Listing_Date"></p>
+        <div
+        class="details_iex"
+        style="display: flex; justify-content: space-between"
+      >
+      <p id="ISIN"></p>
+      &emsp;  &emsp;
+        <p id="Face_Value"></p>
+        </div>
     </div>`;
 
-      document.getElementById("xx2").innerHTML += `
+    document.getElementById("xx2").innerHTML += `
       <div class="fr">
       <span class="pc">Qty:</span>
 
@@ -37,9 +129,9 @@ async function fetchPrice(scrip) {
       />
     
       <span id="xxx"></span>`;
-      document.getElementById("xxx").innerHTML = `
+    document.getElementById("xxx").innerHTML = `
       
-      &nbsp; <span>Price:</span>&nbsp;
+      &nbsp; <span>NSE:</span>&nbsp;
             <!-- <input
               id="place_order_price"
               class="place-order-price"
@@ -56,14 +148,18 @@ async function fetchPrice(scrip) {
               id="place_order_price"
             ></span>
             </div>`;
+    document.getElementById("place_order_price").innerText = closeP;
+    if (data) {
+      document.getElementById("scrip_name").innerText = `NSE: ` + data.name;
 
-      document.getElementById("scrip_name").innerText =
-        `BSE: ` + data.companyName;
-      document.getElementById("52H").innerText = `52H: ` + data.week52High;
-      document.getElementById("52L").innerText = `52L: ` + data.week52Low;
-      document.getElementById("place_order_price").innerText = data.latestPrice;
-    });
-}
+      document.getElementById("ISIN").innerText = `ISIN: ` + data.ISIN;
+      document.getElementById("Listing_Date").innerText =
+        `Listing Date: ` + data.list_date;
+      document.getElementById("Face_Value").innerText =
+        `Face Value: ` + data.fv;
+    }
+  });
+});
 
 let list = {
   "20MICRONS": ["EQ", "INE144J01027", "533022"],

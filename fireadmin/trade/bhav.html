@@ -40,12 +40,18 @@
     <input type="file" id="myfile" accept=".json" />
     <!-- <button type="button" id="upload">Convert</button> -->
     <p class="content"></p>
-    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
-
-    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-auth.js"></script>
-
-    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-firestore.js"></script>
-    <script id="main">
+    <script type="module" id="main">
+      import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-auth.js";
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        getDoc,
+        doc,
+        updateDoc,
+        runTransaction,
+        increment,
+      } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-firestore.js";
       const firebaseConfig = {
         apiKey: "AIzaSyBhn1pgMa_mS4wqVrn8lwYiIrRZjkWANWo",
         authDomain: "qc-invest.firebaseapp.com",
@@ -57,40 +63,41 @@
         appId: "1:936010698151:web:bf6e4b103133588a1bfa82",
       };
 
-      firebase.initializeApp(firebaseConfig);
+      // firebase.initializeApp(firebaseConfig);
+      const app = initializeApp(firebaseConfig);
+      // const cloudDB = firebase.firestore();
+      // const database = cloudDB.collection("eod");
+      const db = getFirestore(app);
 
-      const cloudDB = firebase.firestore();
-      const database = cloudDB.collection("eod");
-    </script>
-
-    <script>
       document.getElementById("myfile").addEventListener("change", function () {
         let file_to_read = document.getElementById("myfile").files[0];
         let fileread = new FileReader();
         fileread.onload = function (e) {
           let content = e.target.result;
           let data = JSON.parse(content);
-          dome(data);
+          dome(data, file_to_read.name);
         };
         fileread.readAsText(file_to_read);
       });
-    </script>
 
-    <script>
-      function dome(data) {
+      async function dome(data, name) {
         let shortData = [];
 
         data.forEach((item) => {
           if (item.SERIES == "EQ" || item.SERIES == "BE") shortData.push(item);
         });
 
-        shortData.forEach((item) => {
+        let yy1 = name.substring(0, 4);
+        let mm1 = name.substring(4, 6);
+        let dd1 = name.substring(6, 8);
+
+        shortData.forEach(async (item) => {
           //TRDVAL = item.TOTTRDVAL;
 
-          let TIMESTAMP = item.TIMESTAMP;
-          let year = TIMESTAMP.slice(7, 11);
-          let month = TIMESTAMP.slice(3, 6);
-          let day = TIMESTAMP.slice(0, 2);
+          // let TIMESTAMP = item.TIMESTAMP;
+          // let year = TIMESTAMP.slice(7, 11);
+          // let month = TIMESTAMP.slice(3, 6);
+          // let day = TIMESTAMP.slice(0, 2);
           // let TOTALTRADES = item.TOTALTRADES;
           let symbol = item.SYMBOL;
           let ISIN = item.ISIN;
@@ -103,27 +110,46 @@
             item.LAST,
             item.PREVCLOSE,
             item.TOTTRDQTY,
+            item.TOTALTRADES,
           ];
-          let YY = year;
-          let MM = month;
-          let DD = day;
 
-          let data = { [MM]: { [DD]: scripData } };
+          // let YY = year;
+          // let MM = month;
+          // let DD = day;
+          // console.log(YY, MM, DD);
 
-          database
-            .doc(`${symbol}`)
-            .set(
-              {
-                [YY]: data,
-              },
-              { merge: true }
-            )
-            .then(() => {
-              console.log("written!");
-            })
-            .catch((error) => {
-              console.error("Error writing document: ", error);
+          // let data = { [MM]: { [DD]: scripData } };
+
+          // database
+          //   .doc(`${symbol}.${yy1}.${mm1}`)
+          //   .set(
+          //     {
+          //       [dd1]: scripData,
+          //     },
+          //     { merge: true }
+          //   )
+          //   .then(() => {
+          //     console.log("written!");
+          //   })
+          //   .catch((error) => {
+          //     console.error("Error writing document: ", error);
+          //   });
+
+          try {
+            await runTransaction(db, async (transaction) => {
+              //check not already present
+              transaction.set(
+                doc(db, "eod", symbol, yy1, mm1),
+                {
+                  [dd1]: scripData,
+                },
+                { merge: true }
+              );
             });
+          } catch (e) {
+            // alert("Failed");
+            console.error(e);
+          }
         });
 
         // console.log(shortData);
