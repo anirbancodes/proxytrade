@@ -20,7 +20,7 @@ const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
-async function fetchPrice(scrip) {
+async function fetchPriceOld(scrip) {
   // let bsecode = list[scrip][2];
   // console.log(
   //   "https://cloud.iexapis.com/stable/stock/" +
@@ -82,38 +82,78 @@ async function fetchPrice(scrip) {
   //  });
 }
 
-export { fetchPrice };
+async function fetchData(scrip) {
+  let apiData;
+  await fetch("https://stock.api.anirbandeb.cloud/" + scrip)
+    .then((res) => res.json())
+    .then((res) => {
+      apiData = res;
+    });
+  //   .catch(async (err) => {
+  //     await fetch("https://time.api.mylotto.in")
+  //       .then((res) => res.json())
+  //       .then((res) => {
+  //         apiData = res;
+  //         time = res.time;
+  //         date = res.date;
+  //         hms = [res.hr, res.min, res.sec, res.ampm];
+  //       });
+  //   });
+  return apiData;
+}
+
+export { fetchPriceOld, fetchData };
 
 /*Hi*/
 
 let symbols = [...document.getElementsByClassName("dropdown-item")];
 symbols.forEach((sym) => {
   sym.addEventListener("click", async (e) => {
-    let closeP = await fetchPrice(sym.innerHTML);
-    const scripRef = doc(db, "eod", sym.innerHTML);
-    let scripData = await getDoc(scripRef);
+    // let closeP = await fetchPrice(sym.innerHTML);
+    // const scripRef = doc(db, "eod", sym.innerHTML);
+    let scripData = await fetchData(sym.innerHTML); //getDoc(scripRef);
+    console.log(scripData);
     let data;
-    if (scripData.exists() && scripData.data().data != null)
-      data = scripData.data().data;
-    document.getElementById("xx2").innerHTML = `
+    // if (scripData.exists() && scripData.data().data != null)
+    data = scripData; //.data().data;
+    console.log(data);
+    document.getElementById("xx2").innerHTML =
+      `
 
       <div id="fc">
-      <p style="margin-bottom: 5px" id="scrip_name"></p>
+      <p style="margin-bottom: 5px" id="scrip_name">` +
+      data.name +
+      `</p>
       <div
         class="details_iex"
         style="display: flex; justify-content: space-between"
       >
-        <p id="52H"></p>
-        <p id="52L"></p>
+        <p id="52H">` +
+      "52W High: " +
+      data.yH +
+      `</p>
+        <p id="52L">` +
+      "52W Low: " +
+      data.yL +
+      `</p>
       </div>
-        <p id="Listing_Date"></p>
+        <p id="MCap">` +
+      "MCap: " +
+      data.mC +
+      `</p>
         <div
         class="details_iex"
         style="display: flex; justify-content: space-between"
       >
-      <p id="ISIN"></p>
+      <p id="dH">` +
+      "Day High: " +
+      data.dH +
+      `</p>
       &emsp;  &emsp;
-        <p id="Face_Value"></p>
+        <p id="Face_Value">` +
+      "Day Low: " +
+      data.dL +
+      `</p>
         </div>
     </div>`;
 
@@ -129,7 +169,8 @@ symbols.forEach((sym) => {
       />
     
       <span id="xxx"></span>`;
-    document.getElementById("xxx").innerHTML = `
+    document.getElementById("xxx").innerHTML =
+      `
       
       &nbsp; <span>NSE:</span>&nbsp;
             <!-- <input
@@ -146,17 +187,18 @@ symbols.forEach((sym) => {
                 color: rgb(225, 169, 64);
               "
               id="place_order_price"
-            ></span>
+            >` +
+      data.ltp +
+      `</span>
             </div>`;
-    document.getElementById("place_order_price").innerText = closeP;
+    document.getElementById("place_order_price").innerText = data.ltp;
     if (data) {
-      document.getElementById("scrip_name").innerText = `NSE: ` + data.name;
-
-      document.getElementById("ISIN").innerText = `ISIN: ` + data.ISIN;
-      document.getElementById("Listing_Date").innerText =
-        `Listing Date: ` + data.list_date;
-      document.getElementById("Face_Value").innerText =
-        `Face Value: ` + data.fv;
+      //   document.getElementById("scrip_name").innerText = `NSE: ` + data.name;
+      // document.getElementById("ISIN").innerText = `ISIN: ` + data.ISIN;
+      // document.getElementById("Listing_Date").innerText =
+      //   `Listing Date: ` + data.list_date;
+      // document.getElementById("Face_Value").innerText =
+      //   `Face Value: ` + data.fv;
     }
   });
 });
