@@ -114,7 +114,7 @@ function holding_info(inv) {
 }
 async function showEachHolding(scrip, qty, avg) {
   //fetch curr
-  let ltp = await fetchPrice(scrip);
+  let ltp = await fetchData(scrip);
   let //ltp = 2000,
     inv = qty * avg,
     pnl = (ltp - avg) * qty,
