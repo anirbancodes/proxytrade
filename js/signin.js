@@ -57,7 +57,7 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-
 const db = getFirestore(app);
 
 import { getPrice } from "./getPrice.js";
-import { fetchPrice } from "../fetchPrice.js";
+import { fetchData } from "../fetchPrice.js";
 
 export async function showHoldings(email) {
   const ref = doc(db, "users", email);
