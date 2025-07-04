@@ -96,10 +96,10 @@ export async function showHoldings(email) {
     keysH.forEach(async (scrip) => {
       let [qty, avg] = holding[scrip];
       currentTot += await showEachHolding(scrip, qty, avg); //qty * 2000;
-      alert(currentTot);
+
       //showEachHolding(scrip, qty, avg);
     });
-    alert(currentTot + "jj");
+
     document.getElementById("holding_totCurrent").innerHTML =
       "Current ₹ " + currentTot;
     document.getElementById("holding_totpnl").innerHTML = currentTot - inv;
@@ -116,6 +116,8 @@ export async function showHoldings(email) {
         showEachOrder(name, type, qty, avg, time);
       });
     }
+    document.getElementById("holding_totCurrent").innerHTML =
+      "Current ₹ " + currentTot;
   } else {
     alert("Please signup !");
   }
