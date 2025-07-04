@@ -84,7 +84,7 @@ async function fetchPriceOld(scrip) {
 
 async function fetchData(scrip) {
   let apiData;
-  await fetch("https://stock.api.anirbandeb.cloud/" + scrip)
+  await fetch("https://stock.api.anirban.pro/" + scrip)
     .then((res) => res.json())
     .then((res) => {
       apiData = res;
