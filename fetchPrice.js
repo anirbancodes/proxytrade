@@ -88,17 +88,17 @@ async function fetchData(scrip) {
     .then((res) => res.json())
     .then((res) => {
       apiData = res;
+    })
+    .catch(async (err) => {
+      await fetch("https://stock.api.stoxic.one")
+        .then((res) => res.json())
+        .then((res) => {
+          apiData = res;
+          // time = res.time;
+          // date = res.date;
+          // hms = [res.hr, res.min, res.sec, res.ampm];
+        });
     });
-  //   .catch(async (err) => {
-  //     await fetch("https://time.api.mylotto.in")
-  //       .then((res) => res.json())
-  //       .then((res) => {
-  //         apiData = res;
-  //         time = res.time;
-  //         date = res.date;
-  //         hms = [res.hr, res.min, res.sec, res.ampm];
-  //       });
-  //   });
   return apiData;
 }
 

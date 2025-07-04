@@ -30,6 +30,7 @@ btn.addEventListener("click", (e) => {
           margin: 100000,
           holding: {},
           orders: [],
+          inv: 0,
         },
         { merge: true }
       );

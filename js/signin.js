@@ -49,10 +49,12 @@ function showUserInfo(email, margin) {
 }
 
 import {
+  getFirestore,
+  increment,
   getDoc,
+  updateDoc,
   doc,
 } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-firestore.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-firestore.js";
 
 const db = getFirestore(app);
 
@@ -60,6 +62,24 @@ import { getPrice } from "./getPrice.js";
 import { fetchData } from "../fetchPrice.js";
 
 export async function showHoldings(email) {
+  let addFundsBtn = document.getElementById("addFunds");
+  addFundsBtn.addEventListener("click", async (e) => {
+    await updateDoc(
+      doc(db, "users", email),
+      {
+        margin: increment(10000),
+      },
+      { merge: true }
+    );
+    // window.location = "/";
+    let margin = document.getElementById("user_margin");
+    margin.innerHTML =
+      "₹ " +
+      (Number(margin.innerHTML.substring(margin.innerHTML.indexOf("₹ ") + 1)) +
+        10000);
+    console.log(margin.innerHTML.substring(margin.innerHTML.indexOf("₹ ")));
+  });
+
   const ref = doc(db, "users", email);
   const docSnap = await getDoc(ref);
   if (docSnap.exists()) {
@@ -98,6 +118,7 @@ export async function showHoldings(email) {
     alert("Please signup !");
   }
 }
+
 function holding_info(inv) {
   //fetch curr
   holding_add_cards.innerHTML =
@@ -114,7 +135,7 @@ function holding_info(inv) {
 }
 async function showEachHolding(scrip, qty, avg) {
   //fetch curr
-  let ltp = await fetchData(scrip);
+  let ltp = Number((await fetchData(scrip)).ltp);
   let //ltp = 2000,
     inv = qty * avg,
     pnl = (ltp - avg) * qty,
