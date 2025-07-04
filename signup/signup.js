@@ -27,7 +27,7 @@ btn.addEventListener("click", (e) => {
       await setDoc(
         doc(db, "users", user.email),
         {
-          margin: 10000,
+          margin: 100000,
           holding: {},
           orders: [],
         },
