@@ -93,9 +93,9 @@ export async function showHoldings(email) {
     let keysH = Object.keys(holding).sort();
     let currentTot = 0,
       plTot = 0;
-    keysH.forEach((scrip) => {
+    keysH.forEach(async (scrip) => {
       let [qty, avg] = holding[scrip];
-      currentTot += showEachHolding(scrip, qty, avg); //qty * 2000;
+      currentTot += await showEachHolding(scrip, qty, avg); //qty * 2000;
       //showEachHolding(scrip, qty, avg);
     });
     document.getElementById("holding_totCurrent").innerHTML =
