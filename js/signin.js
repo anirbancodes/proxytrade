@@ -71,13 +71,13 @@ export async function showHoldings(email) {
       },
       { merge: true }
     );
-    // window.location = "/";
-    let margin = document.getElementById("user_margin");
-    margin.innerHTML =
-      "₹ " +
-      (Number(margin.innerHTML.substring(margin.innerHTML.indexOf("₹ ") + 1)) +
-        10000);
-    console.log(margin.innerHTML.substring(margin.innerHTML.indexOf("₹ ")));
+    window.location = "/";
+    // let margin = document.getElementById("user_margin");
+    // margin.innerHTML =
+    //   "₹ " +
+    //   (Number(margin.innerHTML.substring(margin.innerHTML.indexOf("₹ ") + 1)) +
+    //     10000);
+    // console.log(margin.innerHTML.substring(margin.innerHTML.indexOf("₹ ")));
   });
 
   const ref = doc(db, "users", email);
@@ -95,8 +95,8 @@ export async function showHoldings(email) {
       plTot = 0;
     keysH.forEach((scrip) => {
       let [qty, avg] = holding[scrip];
-      currentTot += qty * 2000;
-      showEachHolding(scrip, qty, avg);
+      currentTot += showEachHolding(scrip, qty, avg); //qty * 2000;
+      //showEachHolding(scrip, qty, avg);
     });
     document.getElementById("holding_totCurrent").innerHTML =
       "Current ₹ " + currentTot;
@@ -163,13 +163,14 @@ async function showEachHolding(scrip, qty, avg) {
     qty +
     `</p>
     <p>Avg: <span class="pc">₹</span> ` +
-    avg +
+    avg.toFixed(2) +
     `</p>
     <p>Invested: <span class="pc">₹</span> ` +
     inv +
     `</p>
   </div>
 </div>`;
+  return ltp * qty;
 }
 
 function showEachOrder(name, type, qty, avg, time) {
