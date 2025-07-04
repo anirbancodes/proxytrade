@@ -87,13 +87,17 @@ async function fetchData(scrip) {
   await fetch("https://stock.api.anirban.pro/" + scrip)
     .then((res) => res.json())
     .then((res) => {
+      // let [ltp,name,pC,dL,dH,yL,yH,mC,pe,dY,pEx]= res;
+
       apiData = res;
+      apiData.ltp = apiData.ltp.replaceAll(",", "");
     })
     .catch(async (err) => {
       await fetch("https://stock.api.stoxic.one")
         .then((res) => res.json())
         .then((res) => {
           apiData = res;
+          apiData.ltp = apiData.ltp.replaceAll(",", "");
           // time = res.time;
           // date = res.date;
           // hms = [res.hr, res.min, res.sec, res.ampm];
