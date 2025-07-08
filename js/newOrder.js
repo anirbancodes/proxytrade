@@ -53,7 +53,7 @@ place_buy.addEventListener("click", async () => {
     orders: arrayUnion(newOrder),
   });
   addToHoldingList(scrip, qty, price); // Add new holding entry manually
-  updateHoldingsUsingCache(); // Re-render with cache
+  // updateHoldingsUsingCache(); // Re-render with cache
 
   document.getElementById("place_order_qty").value = "";
   await refreshUIAfterOrder();
@@ -103,7 +103,7 @@ place_sell.addEventListener("click", async () => {
   await updateDoc(ref, updates);
 
   addToHoldingList(scrip, -qty, price); // Adjust holding
-  updateHoldingsUsingCache();
+  // updateHoldingsUsingCache();
 
   document.getElementById("place_order_qty").value = "";
   await refreshUIAfterOrder();
