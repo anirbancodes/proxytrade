@@ -62,6 +62,42 @@ function holding_info(inv) {
     </div>`;
 }
 
+export async function updateHoldingsView(email) {
+  const ref = doc(db, "users", email);
+  const docSnap = await getDoc(ref);
+
+  if (!docSnap.exists()) return;
+
+  const { inv, margin, holding = {} } = docSnap.data();
+
+  showUserInfo(email, margin);
+  holding_info(inv);
+
+  const keysH = Object.keys(holding).sort();
+  let staticHTML = "";
+
+  keysH.forEach((scrip) => {
+    const [qty, avg] = holding[scrip];
+    const inv = qty * avg;
+
+    staticHTML += `
+    <div class="holding-card" id="holding-${scrip}">
+      <div class="holding-scrip">
+        <p>${scrip}</p>
+        <p>LTP <span class="pc">₹</span> <span class="ltp-value">--</span></p>
+        <p><span class="pc">₹</span> <span class="pnl-value">--</span> (<span class="pnl-pct">--</span>%)</p>
+      </div>
+      <div class="holding-scrip-status">
+        <p>Qty: ${qty}</p>
+        <p>Avg: <span class="pc">₹</span> ${avg.toFixed(2)}</p>
+        <p>Invested: <span class="pc">₹</span> ${inv.toFixed(2)}</p>
+      </div>
+    </div>`;
+  });
+
+  holding_add_cards.innerHTML = staticHTML;
+}
+
 async function updateLTPsForHoldings(holdingList, totalInvested) {
   let totalCurrent = 0;
 
