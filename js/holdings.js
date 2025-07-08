@@ -1,4 +1,4 @@
-import { fetchData } from "../fetchPrice.js";
+import { fetchData } from "./fetchPrice.js";
 import {
   doc,
   getDoc,

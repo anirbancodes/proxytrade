@@ -1,203 +1,106 @@
-import { showHoldings } from "./old/signin.js";
 import {
   getFirestore,
-  collection,
   getDoc,
   doc,
   updateDoc,
   arrayUnion,
-  arrayRemove,
-  Timestamp,
-  deleteDoc,
   deleteField,
 } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-firestore.js";
 
 import { db, auth } from "./firebase.js";
+import { showHoldings } from "./holdings.js";
 
-let place_buy = document.getElementById("place_buy");
-let place_sell = document.getElementById("place_sell");
+const place_buy = document.getElementById("place_buy");
+const place_sell = document.getElementById("place_sell");
 
-place_buy.addEventListener("click", async (e) => {
+place_buy.addEventListener("click", async () => {
   const user = auth.currentUser;
+  if (!user) return alert("Sign in");
 
-  let place_order_scrip = document.getElementById("place_order_scrip").value;
-  let place_order_qty = parseInt(
-    document.getElementById("place_order_qty").value
-  );
-  let place_order_price = parseFloat(
+  const scrip = document.getElementById("place_order_scrip").value;
+  const qty = parseInt(document.getElementById("place_order_qty").value);
+  const price = parseFloat(
     document.getElementById("place_order_price").innerText
   );
-  let order_valid = checkOrderValid(
-    place_order_scrip,
-    place_order_qty,
-    place_order_price
-  );
-  if (order_valid == true) {
-    let time = giveTime();
-    const ref = doc(db, "users", user.email);
-    const docSnap = await getDoc(ref);
-    if (docSnap.exists()) {
-      let data = docSnap.data();
-      let inv = data.inv;
-      let margin = data.margin;
-      let holding = data.holding;
-      if (holding[place_order_scrip] == undefined) {
-        let newData = [place_order_qty, place_order_price];
-        await updateDoc(
-          ref,
-          {
-            [`holding.${place_order_scrip}`]: newData,
-            margin: margin - place_order_price * place_order_qty,
-            inv: inv + place_order_price * place_order_qty,
-          },
-          { merge: true }
-        );
-      } else if (holding[place_order_scrip][0] > 0) {
-        let [scrip_qty, scrip_avg] = holding[place_order_scrip];
-        scrip_qty = parseInt(scrip_qty);
-        scrip_avg = parseFloat(scrip_avg);
-        let newAvg =
-          (scrip_qty * scrip_avg + place_order_qty * place_order_price) /
-          (scrip_qty + place_order_qty);
-        let newData = [scrip_qty + place_order_qty, newAvg];
 
-        await updateDoc(
-          ref,
-          {
-            [`holding.${place_order_scrip}`]: newData,
-            margin: margin - place_order_price * place_order_qty,
-            inv: inv + place_order_price * place_order_qty,
-          },
-          { merge: true }
-        );
-      }
-      await updateDoc(ref, {
-        orders: arrayUnion({
-          [place_order_scrip]: ["b", place_order_qty, place_order_price, time],
-        }),
-      });
-      showHoldings(user.email);
-    }
-  } else {
-    alert("Sign in");
-  }
+  if (!checkOrderValid(scrip, qty, price)) return;
+
+  const ref = doc(db, "users", user.email);
+  const docSnap = await getDoc(ref);
+  if (!docSnap.exists()) return alert("User not found");
+
+  const { inv, margin, holding = {} } = docSnap.data();
+  const time = getFormattedTime();
+  const investment = price * qty;
+
+  const newHolding = holding[scrip] ? [...holding[scrip]] : [0, 0];
+  const [oldQty, oldAvg] = newHolding;
+  const newQty = oldQty + qty;
+  const newAvg = (oldQty * oldAvg + qty * price) / newQty;
+
+  await updateDoc(ref, {
+    [`holding.${scrip}`]: [newQty, newAvg],
+    margin: margin - investment,
+    inv: inv + investment,
+    orders: arrayUnion({ [scrip]: ["b", qty, price, time] }),
+  });
+
+  showHoldings(user.email);
 });
 
-place_sell.addEventListener("click", async (e) => {
+place_sell.addEventListener("click", async () => {
   const user = auth.currentUser;
+  if (!user) return alert("Sign in");
 
-  let place_order_scrip = document.getElementById("place_order_scrip").value;
-  let place_order_qty = parseInt(
-    document.getElementById("place_order_qty").value
-  );
-  let place_order_price = parseFloat(
+  const scrip = document.getElementById("place_order_scrip").value;
+  const qty = parseInt(document.getElementById("place_order_qty").value);
+  const price = parseFloat(
     document.getElementById("place_order_price").innerText
   );
-  let order_valid = checkOrderValid(
-    place_order_scrip,
-    place_order_qty,
-    place_order_price
-  );
-  if (order_valid == true) {
-    let time = giveTime();
-    const ref = doc(db, "users", user.email);
-    const docSnap = await getDoc(ref);
-    if (docSnap.exists()) {
-      let data = docSnap.data();
-      let inv = data.inv;
-      let margin = data.margin;
-      let holding = data.holding;
-      if (holding[place_order_scrip] == undefined) {
-        alert("Not present in holding..");
-      } else if (holding[place_order_scrip][0] > 0) {
-        let [scrip_qty, scrip_avg] = holding[place_order_scrip];
-        scrip_qty = parseInt(scrip_qty);
-        scrip_avg = parseFloat(scrip_avg);
-        if (place_order_qty > scrip_qty) {
-          alert("Insufficient Holding Qty");
-        } else if (place_order_qty < scrip_qty) {
-          let newData = [scrip_qty - place_order_qty, scrip_avg];
-          await updateDoc(
-            ref,
-            {
-              [`holding.${place_order_scrip}`]: newData,
-              margin: margin + place_order_price * place_order_qty,
-              inv: inv - scrip_avg * place_order_qty,
-            },
-            { merge: true }
-          );
-          await updateDoc(ref, {
-            orders: arrayUnion({
-              [place_order_scrip]: [
-                "s",
-                place_order_qty,
-                place_order_price,
-                time,
-              ],
-            }),
-          });
-          showHoldings(user.email);
-        } else if (place_order_qty == scrip_qty) {
-          await updateDoc(
-            ref,
-            {
-              [`holding.${place_order_scrip}`]: deleteField(),
-              margin: margin + place_order_price * place_order_qty,
-              inv: inv - scrip_avg * place_order_qty,
-            },
-            { merge: true }
-          );
-          await updateDoc(ref, {
-            orders: arrayUnion({
-              [place_order_scrip]: [
-                "s",
-                place_order_qty,
-                place_order_price,
-                time,
-              ],
-            }),
-          });
-          showHoldings(user.email);
-        }
-      }
-    }
-  } else {
-    alert("Sign in");
-  }
+
+  if (!checkOrderValid(scrip, qty, price)) return;
+
+  const ref = doc(db, "users", user.email);
+  const docSnap = await getDoc(ref);
+  if (!docSnap.exists()) return alert("User not found");
+
+  const { inv, margin, holding = {} } = docSnap.data();
+  const current = holding[scrip];
+  if (!current || current[0] <= 0) return alert("Not present in holding");
+
+  const time = getFormattedTime();
+  const [oldQty, avg] = current;
+
+  if (qty > oldQty) return alert("Insufficient Holding Qty");
+
+  const newQty = oldQty - qty;
+  const pnl = (price - avg) * qty;
+
+  const updates = {
+    margin: margin + price * qty,
+    inv: inv - avg * qty,
+    orders: arrayUnion({ [scrip]: ["s", qty, price, time] }),
+  };
+
+  if (newQty === 0) updates[`holding.${scrip}`] = deleteField();
+  else updates[`holding.${scrip}`] = [newQty, avg];
+
+  await updateDoc(ref, updates);
+  showHoldings(user.email);
 });
 
 function checkOrderValid(scrip, qty, price) {
-  if (scrip == null) {
-    alert("Select any stock");
-    return false;
-  }
-  if (qty <= 0 || qty == null) {
-    alert("Enter valid qty");
-    return false;
-  }
-  if (price <= 0 || price == null) {
-    alert("Enter valid price");
-    return false;
-  }
+  if (!scrip) return alert("Select any stock"), false;
+  if (!qty || qty <= 0) return alert("Enter valid qty"), false;
+  if (!price || price <= 0) return alert("Enter valid price"), false;
   return true;
 }
 
-function giveTime() {
-  let current = new Date();
-  let cDate =
-    current.getDate() +
-    "-" +
-    (current.getMonth() + 1) +
-    "-" +
-    current.getFullYear();
-  let cTime =
-    current.getHours() +
-    ":" +
-    current.getMinutes() +
-    ":" +
-    current.getSeconds();
-  let dateTime = cDate + " " + cTime;
-  return dateTime;
+function getFormattedTime() {
+  const now = new Date();
+  const date = now.toLocaleDateString("en-IN").replaceAll("/", "-");
+  const time = now.toLocaleTimeString("en-IN");
+  return `${date} ${time}`;
 }
 
 /* // For sell
