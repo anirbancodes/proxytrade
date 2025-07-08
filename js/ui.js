@@ -30,6 +30,7 @@ export function logoutStyle() {
   // document.getElementById("addFunds").style.display = "none";
   document.getElementById("email").value = "";
   document.getElementById("password").value = "";
+  document.getElementById("signupBtn").style.display = "";
 }
 
 export function loginStyle() {

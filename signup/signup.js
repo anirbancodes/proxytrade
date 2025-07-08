@@ -1,25 +1,12 @@
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-} from "https://www.gstatic.com/firebasejs/9.6.9/firebase-auth.js";
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-firestore.js";
-import {
-  doc,
-  setDoc,
-} from "https://www.gstatic.com/firebasejs/9.6.9/firebase-firestore.js";
+import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-auth.js";
 
 let btn = document.getElementById("signupBtn");
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+import { db, auth, doc, setDoc } from "../js/firebase.js";
 
 btn.addEventListener("click", (e) => {
   let email = document.getElementById("email").value;
   let password = document.getElementById("password").value;
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
 
   createUserWithEmailAndPassword(auth, email, password)
     .then(async (userCredential) => {
@@ -35,13 +22,14 @@ btn.addEventListener("click", (e) => {
         { merge: true }
       );
 
-      alert("Done ! Press OK");
+      // alert("Done ! Press OK");
       window.location = "/";
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
       console.log(errorCode, errorMessage);
+      alert(error.message);
       // ..
     });
 });

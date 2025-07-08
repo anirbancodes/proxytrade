@@ -5,6 +5,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-firestore.js";
 import { db } from "./firebase.js";
 import { showUserInfo } from "./ui.js";
+import { setupOrders } from "./orders.js";
 
 const holding_add_cards = document.getElementById("holding_add_cards");
 
@@ -17,7 +18,7 @@ export async function showHoldings(email) {
     return;
   }
 
-  const { inv, margin, holding = {} } = docSnap.data();
+  const { inv, margin, holding = {}, orders = [] } = docSnap.data();
 
   showUserInfo(email, margin);
   holding_info(inv);
@@ -49,6 +50,7 @@ export async function showHoldings(email) {
 
   holding_add_cards.innerHTML += staticHTML;
   updateLTPsForHoldings(holdingList, inv);
+  setupOrders(orders);
 }
 
 function holding_info(inv) {

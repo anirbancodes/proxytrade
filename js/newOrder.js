@@ -1,14 +1,14 @@
 import {
-  getFirestore,
+  db,
+  auth,
   getDoc,
   doc,
   updateDoc,
   arrayUnion,
   deleteField,
-} from "https://www.gstatic.com/firebasejs/9.6.9/firebase-firestore.js";
-
-import { db, auth } from "./firebase.js";
+} from "./firebase.js";
 import { showHoldings } from "./holdings.js";
+import { setupOrders } from "./orders.js";
 
 const place_buy = document.getElementById("place_buy");
 const place_sell = document.getElementById("place_sell");
@@ -30,7 +30,7 @@ place_buy.addEventListener("click", async () => {
   const docSnap = await getDoc(ref);
   if (!docSnap.exists()) return alert("User not found");
 
-  const { inv, margin, holding = {} } = docSnap.data();
+  const { inv, margin, holding = {}, orders = [] } = docSnap.data();
   const time = getFormattedTime();
   const investment = price * qty;
 
@@ -39,15 +39,18 @@ place_buy.addEventListener("click", async () => {
   const newQty = oldQty + qty;
   const newAvg = (oldQty * oldAvg + qty * price) / newQty;
 
+  const newOrder = { [scrip]: ["b", qty, price, time] };
+
   await updateDoc(ref, {
     [`holding.${scrip}`]: [newQty, newAvg],
     margin: margin - investment,
     inv: inv + investment,
-    orders: arrayUnion({ [scrip]: ["b", qty, price, time] }),
+    orders: arrayUnion(newOrder),
   });
-  document.getElementById("place_order_qty").value;
 
+  document.getElementById("place_order_qty").value = "";
   showHoldings(user.email);
+  setupOrders([newOrder, ...orders]);
 });
 
 place_sell.addEventListener("click", async () => {
@@ -66,7 +69,7 @@ place_sell.addEventListener("click", async () => {
   const docSnap = await getDoc(ref);
   if (!docSnap.exists()) return alert("User not found");
 
-  const { inv, margin, holding = {} } = docSnap.data();
+  const { inv, margin, holding = {}, orders = [] } = docSnap.data();
   const current = holding[scrip];
   if (!current || current[0] <= 0) return alert("Not present in holding");
 
@@ -78,18 +81,22 @@ place_sell.addEventListener("click", async () => {
   const newQty = oldQty - qty;
   const pnl = (price - avg) * qty;
 
+  const newOrder = { [scrip]: ["s", qty, price, time] };
+
   const updates = {
     margin: margin + price * qty,
     inv: inv - avg * qty,
-    orders: arrayUnion({ [scrip]: ["s", qty, price, time] }),
+    orders: arrayUnion(newOrder),
   };
 
   if (newQty === 0) updates[`holding.${scrip}`] = deleteField();
   else updates[`holding.${scrip}`] = [newQty, avg];
 
   await updateDoc(ref, updates);
-  document.getElementById("place_order_qty").value;
+
+  document.getElementById("place_order_qty").value = "";
   showHoldings(user.email);
+  setupOrders([newOrder, ...orders]);
 });
 
 function checkOrderValid(scrip, qty, price) {

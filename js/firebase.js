@@ -10,7 +10,10 @@ import {
   doc,
   getDoc,
   updateDoc,
+  setDoc,
+  arrayUnion,
   increment,
+  deleteField,
 } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -39,4 +42,7 @@ export {
   updateDoc,
   onAuthStateChanged,
   increment,
+  setDoc,
+  arrayUnion,
+  deleteField,
 };

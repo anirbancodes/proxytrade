@@ -6,12 +6,15 @@ let currentOrderPage = 1;
 const ordersPerPage = 5;
 
 export function setupOrders(orders = []) {
-  ordersList = orders;
-  const savedPage = parseInt(localStorage.getItem("orders_current_page")) || 1;
-  currentOrderPage = Math.min(
-    savedPage,
-    Math.ceil(ordersList.length / ordersPerPage) || 1
-  );
+  ordersList = [...orders].sort((a, b) => {
+    const keyA = Object.keys(a)[0];
+    const keyB = Object.keys(b)[0];
+    const timeA = a[keyA][3];
+    const timeB = b[keyB][3];
+    return parseTimeDesc(timeB) - parseTimeDesc(timeA); // Sort DESC
+  });
+
+  currentOrderPage = 1;
   renderOrdersPage(currentOrderPage);
 }
 
@@ -149,4 +152,15 @@ function showEachOrder(name, type, qty, avg, time) {
         <p>${time}</p>
       </div>
     </div>`;
+}
+
+function parseTimeDesc(dateStr) {
+  const [datePart, timePart, ampm] = dateStr.split(" ");
+  const [day, month, year] = datePart.split("-").map(Number);
+  let [hours, minutes, seconds] = timePart.split(":").map(Number);
+
+  if (ampm === "PM" && hours !== 12) hours += 12;
+  if (ampm === "AM" && hours === 12) hours = 0;
+
+  return new Date(year, month - 1, day, hours, minutes, seconds).getTime();
 }
