@@ -93,7 +93,41 @@ async function fetchData(scrip) {
       apiData.ltp = apiData.ltp.replaceAll(",", "");
     })
     .catch(async (err) => {
-      await fetch("https://stock.api.stoxic.one")
+      await fetch("https://stock.api.stoxic.one/" + scrip)
+        .then((res) => res.json())
+        .then((res) => {
+          apiData = res;
+          apiData.ltp = apiData.ltp.replaceAll(",", "");
+          // time = res.time;
+          // date = res.date;
+          // hms = [res.hr, res.min, res.sec, res.ampm];
+        });
+    })
+    .catch(async (err) => {
+      apiData = {
+        ltp: -1,
+        dH: -1,
+        dL: -1,
+        name: "Could not load",
+        yL: -1,
+        yH: -1,
+        pC: -1,
+      };
+    });
+  return apiData;
+}
+async function fetchIdx(idx) {
+  let apiData;
+  await fetch("https://stock.api.anirban.pro/" + idx)
+    .then((res) => res.json())
+    .then((res) => {
+      // let [ltp,name,pC,dL,dH,yL,yH,mC,pe,dY,pEx]= res;
+
+      apiData = res;
+      apiData.ltp = apiData.ltp.replaceAll(",", "");
+    })
+    .catch(async (err) => {
+      await fetch("https://stock.api.stoxic.one/" + idx)
         .then((res) => res.json())
         .then((res) => {
           apiData = res;
