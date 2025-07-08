@@ -4,9 +4,10 @@ import { showUserInfo } from "./ui.js";
 import { setupOrders } from "./orders.js";
 
 const holding_add_cards = document.getElementById("holding_add_cards");
+
 let ltpCache = {};
-let holdingList = [],
-  currentTotalInvested = 0;
+let holdingList = [];
+let currentTotalInvested = 0;
 
 export async function showHoldings(email) {
   const ref = doc(db, "users", email);
@@ -24,6 +25,7 @@ export async function showHoldings(email) {
 
   const keysH = Object.keys(holding).sort();
 
+  // Set globals for later cache-based re-render
   currentTotalInvested = inv;
   holdingList = [];
   let staticHTML = "";
@@ -31,8 +33,6 @@ export async function showHoldings(email) {
   keysH.forEach((scrip) => {
     const [qty, avg] = holding[scrip];
     const inv = qty * avg;
-
-    const ltp = ltpCache[scrip];
 
     staticHTML += `
     <div class="holding-card" id="holding-${scrip}">
@@ -52,7 +52,7 @@ export async function showHoldings(email) {
   });
 
   holding_add_cards.innerHTML += staticHTML;
-  updateLTPsForHoldings(holdingList, inv);
+  await updateLTPsForHoldings();
   setupOrders(orders);
 }
 
@@ -65,43 +65,7 @@ function holding_info(inv) {
     </div>`;
 }
 
-export async function updateHoldingsView(email) {
-  const ref = doc(db, "users", email);
-  const docSnap = await getDoc(ref);
-
-  if (!docSnap.exists()) return;
-
-  const { inv, margin, holding = {} } = docSnap.data();
-
-  showUserInfo(email, margin);
-  holding_info(inv);
-
-  const keysH = Object.keys(holding).sort();
-  let staticHTML = "";
-
-  keysH.forEach((scrip) => {
-    const [qty, avg] = holding[scrip];
-    const inv = qty * avg;
-
-    staticHTML += `
-    <div class="holding-card" id="holding-${scrip}">
-      <div class="holding-scrip">
-        <p>${scrip}</p>
-        <p>LTP <span class="pc">₹</span> <span class="ltp-value">--</span></p>
-        <p><span class="pc">₹</span> <span class="pnl-value">--</span> (<span class="pnl-pct">--</span>%)</p>
-      </div>
-      <div class="holding-scrip-status">
-        <p>Qty: ${qty}</p>
-        <p>Avg: <span class="pc">₹</span> ${avg.toFixed(2)}</p>
-        <p>Invested: <span class="pc">₹</span> ${inv.toFixed(2)}</p>
-      </div>
-    </div>`;
-  });
-
-  holding_add_cards.innerHTML = staticHTML;
-}
-
-async function updateLTPsForHoldings(holdingList, totalInvested) {
+async function updateLTPsForHoldings() {
   let totalCurrent = 0;
 
   for (const { scrip, qty, avg } of holdingList) {
@@ -116,44 +80,43 @@ async function updateLTPsForHoldings(holdingList, totalInvested) {
       }
     }
 
-    try {
-      // const ltp = Number((await fetchData(scrip)).ltp);
-      const inv = qty * avg;
-      const pnl = (ltp - avg) * qty;
-      const pnlPct = inv !== 0 ? ((pnl / inv) * 100).toFixed(2) : "0.00";
-      totalCurrent += ltp * qty;
+    const inv = qty * avg;
+    const pnl = (ltp - avg) * qty;
+    const pnlPct = inv !== 0 ? ((pnl / inv) * 100).toFixed(2) : "0.00";
+    totalCurrent += ltp * qty;
 
-      const card = document.getElementById(`holding-${scrip}`);
-      card.classList.add(pnl >= 0 ? "green" : "red");
-      card.querySelector(".ltp-value").textContent = ltp.toFixed(2);
-      card.querySelector(".pnl-value").textContent = pnl.toFixed(2);
-      card.querySelector(".pnl-pct").textContent = pnlPct;
-    } catch (err) {
-      console.error(`Error fetching LTP for ${scrip}:`, err);
-    }
+    const card = document.getElementById(`holding-${scrip}`);
+    if (!card) continue;
+
+    card.classList.add(pnl >= 0 ? "green" : "red");
+    card.querySelector(".ltp-value").textContent = ltp.toFixed(2);
+    card.querySelector(".pnl-value").textContent = pnl.toFixed(2);
+    card.querySelector(".pnl-pct").textContent = pnlPct;
   }
 
   document.getElementById("holding_totCurrent").textContent =
     "Current ₹ " + totalCurrent.toFixed(2);
-  document.getElementById("holding_totpnl").textContent = (
-    totalCurrent - totalInvested
-  ).toFixed(2);
-  const pnlPercent = totalInvested
-    ? (((totalCurrent - totalInvested) / totalInvested) * 100).toFixed(2)
+
+  const pnl = totalCurrent - currentTotalInvested;
+  const pnlPercent = currentTotalInvested
+    ? ((pnl / currentTotalInvested) * 100).toFixed(2)
     : "0.00";
-  document.getElementById("holding_totpnlprcnt").textContent =
-    "(" + pnlPercent + "%)";
+
+  document.getElementById("holding_totpnl").textContent = pnl.toFixed(2);
+  document.getElementById(
+    "holding_totpnlprcnt"
+  ).textContent = `(${pnlPercent}%)`;
 }
 
 export function updateHoldingsUsingCache() {
-  holding_add_cards.innerHTML = ""; // clear previous
-  holding_info(currentTotalInvested); // reuse previous investment value
+  holding_add_cards.innerHTML = ""; // Clear previous cards
+  holding_info(currentTotalInvested); // Reuse invested value
 
   let totalCurrent = 0;
 
-  for (const { scrip, qty, avg } of holdingList) {
+  holdingList.forEach(({ scrip, qty, avg }) => {
     const ltp = ltpCache[scrip];
-    if (!ltp) continue;
+    if (!ltp) return;
 
     const inv = qty * avg;
     const pnl = (ltp - avg) * qty;
@@ -182,7 +145,7 @@ export function updateHoldingsUsingCache() {
     `;
 
     holding_add_cards.innerHTML += cardHTML;
-  }
+  });
 
   document.getElementById("holding_totCurrent").textContent =
     "Current ₹ " + totalCurrent.toFixed(2);
