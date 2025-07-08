@@ -1,11 +1,7 @@
-import {
-  getAuth,
-  onAuthStateChanged,
-} from "https://www.gstatic.com/firebasejs/9.6.9/firebase-auth.js";
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-app.js";
-import { showHoldings } from "./signin.js";
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+import { showHoldings } from "./old/signin.js";
+import { loginStyle } from "./ui.js";
+
+import { auth, onAuthStateChanged } from "./firebase.js";
 
 onAuthStateChanged(auth, (user) => {
   if (user) {

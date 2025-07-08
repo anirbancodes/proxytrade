@@ -1,6 +1,4 @@
-import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-auth.js";
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-app.js";
-import { showHoldings } from "./signin.js";
+import { showHoldings } from "./old/signin.js";
 import {
   getFirestore,
   collection,
@@ -14,9 +12,7 @@ import {
   deleteField,
 } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-firestore.js";
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+import { db, auth } from "./firebase.js";
 
 let place_buy = document.getElementById("place_buy");
 let place_sell = document.getElementById("place_sell");

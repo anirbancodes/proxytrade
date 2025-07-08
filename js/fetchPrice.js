@@ -105,13 +105,13 @@ async function fetchData(scrip) {
     })
     .catch(async (err) => {
       apiData = {
-        ltp: -1,
-        dH: -1,
-        dL: -1,
+        ltp: 0,
+        dH: 0,
+        dL: 0,
         name: "Could not load",
-        yL: -1,
-        yH: -1,
-        pC: -1,
+        yL: 0,
+        yH: 0,
+        pC: 0,
       };
     });
   return apiData;

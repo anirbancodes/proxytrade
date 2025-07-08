@@ -13,7 +13,7 @@ import {
   updateDoc,
   doc,
 } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-firestore.js";
-import { getPrice } from "./getPrice.js";
+import { getPrice } from "./old-getPrice.js";
 import { fetchData } from "../fetchPrice.js";
 
 const loginBtn = document.getElementById("loginBtn");
@@ -23,9 +23,7 @@ const user_margin = document.getElementById("user_margin");
 const holding_add_cards = document.getElementById("holding_add_cards");
 const order_add_cards = document.getElementById("order_add_cards");
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+import { db, auth } from "../firebase.js";
 
 let currentTot = 0;
 
@@ -62,14 +60,14 @@ function showUserInfo(email, margin) {
 
 export async function showHoldings(email) {
   const addFundsBtn = document.getElementById("addFunds");
-  addFundsBtn.addEventListener("click", async () => {
-    await updateDoc(
-      doc(db, "users", email),
-      { margin: increment(10000) },
-      { merge: true }
-    );
-    window.location = "/";
-  });
+  // addFundsBtn.addEventListener("click", async () => {
+  //   await updateDoc(
+  //     doc(db, "users", email),
+  //     { margin: increment(10000) },
+  //     { merge: true }
+  //   );
+  //   window.location = "/";
+  // });
 
   const ref = doc(db, "users", email);
   const docSnap = await getDoc(ref);
@@ -85,19 +83,66 @@ export async function showHoldings(email) {
   holding_info(inv);
 
   const keysH = Object.keys(holding).sort();
-  currentTot = 0;
+  const holdingList = [];
+  let staticHTML = "";
 
-  for (const scrip of keysH) {
+  keysH.forEach((scrip) => {
     const [qty, avg] = holding[scrip];
-    currentTot += await showEachHolding(scrip, qty, avg);
-  }
+    const inv = qty * avg;
 
-  document.getElementById(
-    "holding_totCurrent"
-  ).innerHTML = `Current ₹ ${currentTot}`;
-  document.getElementById("holding_totpnl").innerHTML = currentTot - inv;
-  const pnlpcnt = (((currentTot - inv) / inv) * 100).toFixed(2);
-  document.getElementById("holding_totpnlprcnt").innerHTML = `(${pnlpcnt}%)`;
+    staticHTML += `
+    <div class="holding-card" id="holding-${scrip}">
+      <div class="holding-scrip">
+        <p>${scrip}</p>
+        <p>LTP <span class="pc">₹</span> <span class="ltp-value">--</span></p>
+        <p><span class="pc">₹</span> <span class="pnl-value">--</span> (<span class="pnl-pct">--</span>%)</p>
+      </div>
+      <div class="holding-scrip-status">
+        <p>Qty: ${qty}</p>
+        <p>Avg: <span class="pc">₹</span> ${avg.toFixed(2)}</p>
+        <p>Invested: <span class="pc">₹</span> ${inv.toFixed(2)}</p>
+      </div>
+    </div>`;
+
+    holdingList.push({ scrip, qty, avg });
+  });
+
+  holding_add_cards.innerHTML += staticHTML;
+  updateLTPsForHoldings(holdingList, inv);
+
+  async function updateLTPsForHoldings(holdingList, totalInvested) {
+    let totalCurrent = 0;
+
+    for (const { scrip, qty, avg } of holdingList) {
+      try {
+        const ltp = Number((await fetchData(scrip)).ltp);
+        const inv = qty * avg;
+        const pnl = (ltp - avg) * qty;
+        const pnlPct = inv !== 0 ? ((pnl / inv) * 100).toFixed(2) : "0.00";
+        totalCurrent += ltp * qty;
+
+        const card = document.getElementById(`holding-${scrip}`);
+        card.classList.add(pnl >= 0 ? "green" : "red");
+        card.querySelector(".ltp-value").textContent = ltp.toFixed(2);
+        card.querySelector(".pnl-value").textContent = pnl.toFixed(2);
+        card.querySelector(".pnl-pct").textContent = pnlPct;
+      } catch (err) {
+        console.error(`Error fetching LTP for ${scrip}:`, err);
+      }
+    }
+
+    // Update holding totals
+    document.getElementById("holding_totCurrent").textContent =
+      "Current ₹ " + totalCurrent.toFixed(2);
+    document.getElementById("holding_totpnl").textContent = (
+      totalCurrent - totalInvested
+    ).toFixed(2);
+    const pnlPercent = totalInvested
+      ? (((totalCurrent - totalInvested) / totalInvested) * 100).toFixed(2)
+      : "0.00";
+    document.getElementById("holding_totpnlprcnt").textContent =
+      "(" + pnlPercent + "%)";
+  }
 
   order_add_cards.innerHTML = "";
 
@@ -108,12 +153,6 @@ export async function showHoldings(email) {
     Math.ceil(ordersList.length / ordersPerPage) || 1
   );
   renderOrdersPage(currentOrderPage);
-
-  // orders.forEach((order) => {
-  //   const name = Object.keys(order)[0];
-  //   const [type, qty, avg, time] = order[name];
-  //   showEachOrder(name, type, qty, avg, time);
-  // });
 }
 function renderOrdersPage(page) {
   const start = (page - 1) * ordersPerPage;
