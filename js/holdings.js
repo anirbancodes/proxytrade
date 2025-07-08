@@ -1,13 +1,10 @@
 import { fetchData } from "./fetchPrice.js";
-import {
-  doc,
-  getDoc,
-} from "https://www.gstatic.com/firebasejs/9.6.9/firebase-firestore.js";
-import { db } from "./firebase.js";
+import { db, doc, getDoc } from "./firebase.js";
 import { showUserInfo } from "./ui.js";
 import { setupOrders } from "./orders.js";
 
 const holding_add_cards = document.getElementById("holding_add_cards");
+const ltpCache = {};
 
 export async function showHoldings(email) {
   const ref = doc(db, "users", email);
@@ -30,6 +27,8 @@ export async function showHoldings(email) {
   keysH.forEach((scrip) => {
     const [qty, avg] = holding[scrip];
     const inv = qty * avg;
+
+    const ltp = ltpCache[scrip];
 
     staticHTML += `
     <div class="holding-card" id="holding-${scrip}">
@@ -102,8 +101,19 @@ async function updateLTPsForHoldings(holdingList, totalInvested) {
   let totalCurrent = 0;
 
   for (const { scrip, qty, avg } of holdingList) {
+    let ltp = ltpCache[scrip];
+    if (!ltp) {
+      try {
+        ltp = Number((await fetchData(scrip)).ltp);
+        ltpCache[scrip] = ltp;
+      } catch (err) {
+        console.error(`Error fetching LTP for ${scrip}:`, err);
+        continue;
+      }
+    }
+
     try {
-      const ltp = Number((await fetchData(scrip)).ltp);
+      // const ltp = Number((await fetchData(scrip)).ltp);
       const inv = qty * avg;
       const pnl = (ltp - avg) * qty;
       const pnlPct = inv !== 0 ? ((pnl / inv) * 100).toFixed(2) : "0.00";

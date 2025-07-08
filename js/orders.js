@@ -27,12 +27,12 @@ export function renderOrdersPage(page) {
   paginatedOrders.forEach(async (order) => {
     const name = Object.keys(order)[0];
     const [type, qty, avg, time] = order[name];
-    if (!document.getElementById(`order-${name}-${time}`)) {
-      const ltpData = await fetchData(name);
-      showEachOrder(name, type, qty, avg, time, ltpData.ltp);
-    } else {
-      showEachOrder(name, type, qty, avg, time);
-    }
+    // if (!document.getElementById(`order-${name}-${time}`)) {
+    //   const ltpData = await fetchData(name);
+    //   showEachOrder(name, type, qty, avg, time, ltpData.ltp);
+    // } else {
+    showEachOrder(name, type, qty, avg, time);
+    // }
   });
 
   renderOrderPaginationControls(page);
