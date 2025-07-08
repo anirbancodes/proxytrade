@@ -7,7 +7,11 @@ import {
   arrayUnion,
   deleteField,
 } from "./firebase.js";
-import { showHoldings } from "./holdings.js";
+import {
+  showHoldings,
+  updateHoldingsUsingCache,
+  addToHoldingList,
+} from "./holdings.js";
 import { setupOrders } from "./orders.js";
 import { refreshUIAfterOrder } from "./refreshUI.js";
 
@@ -48,6 +52,8 @@ place_buy.addEventListener("click", async () => {
     inv: inv + investment,
     orders: arrayUnion(newOrder),
   });
+  addToHoldingList(scrip, qty, price); // Add new holding entry manually
+  updateHoldingsUsingCache(); // Re-render with cache
 
   document.getElementById("place_order_qty").value = "";
   await refreshUIAfterOrder();
@@ -95,6 +101,9 @@ place_sell.addEventListener("click", async () => {
   else updates[`holding.${scrip}`] = [newQty, avg];
 
   await updateDoc(ref, updates);
+
+  addToHoldingList(scrip, -qty, price); // Adjust holding
+  updateHoldingsUsingCache();
 
   document.getElementById("place_order_qty").value = "";
   await refreshUIAfterOrder();

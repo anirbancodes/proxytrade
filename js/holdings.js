@@ -161,6 +161,32 @@ export function updateHoldingsUsingCache() {
   ).textContent = `(${pnlPercent}%)`;
 }
 
+export function addToHoldingList(scrip, qtyDelta, price) {
+  const existing = holdingList.find((h) => h.scrip === scrip);
+
+  if (existing) {
+    const totalQty = existing.qty + qtyDelta;
+
+    if (totalQty <= 0) {
+      // Remove from list if all sold
+      holdingList = holdingList.filter((h) => h.scrip !== scrip);
+      delete ltpCache[scrip];
+    } else {
+      existing.avg =
+        (existing.qty * existing.avg + qtyDelta * price) / totalQty;
+      existing.qty = totalQty;
+    }
+  } else if (qtyDelta > 0) {
+    holdingList.push({ scrip, qty: qtyDelta, avg: price });
+  }
+
+  // Update invested total
+  currentTotalInvested = holdingList.reduce(
+    (sum, { qty, avg }) => sum + qty * avg,
+    0
+  );
+}
+
 /*import { fetchData } from "./fetchPrice.js";
 import {
   doc,
