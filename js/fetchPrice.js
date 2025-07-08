@@ -52,8 +52,6 @@ async function fetchIdx(idx) {
   return apiData;
 }
 
-export { fetchData };
-
 /*Hi*/
 
 let symbols = [...document.getElementsByClassName("dropdown-item")];
