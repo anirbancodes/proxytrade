@@ -2,6 +2,101 @@ import { fetchData } from "./fetchPrice.js";
 import {
   doc,
   getDoc,
+} from "https://www.gstatic.com/firebasejs/9.6.9/firebase-firestore.js";
+import { db } from "./firebase.js";
+import { showUserInfo } from "./ui.js";
+
+const holding_add_cards = document.getElementById("holding_add_cards");
+
+export async function showHoldings(email) {
+  const ref = doc(db, "users", email);
+  const docSnap = await getDoc(ref);
+
+  if (!docSnap.exists()) {
+    alert("Please signup !");
+    return;
+  }
+
+  const { inv, margin, holding = {} } = docSnap.data();
+
+  showUserInfo(email, margin);
+  holding_info(inv);
+
+  const keysH = Object.keys(holding).sort();
+  const holdingList = [];
+  let staticHTML = "";
+
+  keysH.forEach((scrip) => {
+    const [qty, avg] = holding[scrip];
+    const inv = qty * avg;
+
+    staticHTML += `
+    <div class="holding-card" id="holding-${scrip}">
+      <div class="holding-scrip">
+        <p>${scrip}</p>
+        <p>LTP <span class="pc">₹</span> <span class="ltp-value">--</span></p>
+        <p><span class="pc">₹</span> <span class="pnl-value">--</span> (<span class="pnl-pct">--</span>%)</p>
+      </div>
+      <div class="holding-scrip-status">
+        <p>Qty: ${qty}</p>
+        <p>Avg: <span class="pc">₹</span> ${avg.toFixed(2)}</p>
+        <p>Invested: <span class="pc">₹</span> ${inv.toFixed(2)}</p>
+      </div>
+    </div>`;
+
+    holdingList.push({ scrip, qty, avg });
+  });
+
+  holding_add_cards.innerHTML += staticHTML;
+  updateLTPsForHoldings(holdingList, inv);
+}
+
+function holding_info(inv) {
+  holding_add_cards.innerHTML = `
+    <div class="holding-status">
+      <p id="holding_totInvested">Invested ₹ ${inv}</p>
+      <p id="holding_totCurrent">Current ₹ </p>
+      <p>P&L: <span id="holding_totpnl"></span> <span id="holding_totpnlprcnt"></span></p>
+    </div>`;
+}
+
+async function updateLTPsForHoldings(holdingList, totalInvested) {
+  let totalCurrent = 0;
+
+  for (const { scrip, qty, avg } of holdingList) {
+    try {
+      const ltp = Number((await fetchData(scrip)).ltp);
+      const inv = qty * avg;
+      const pnl = (ltp - avg) * qty;
+      const pnlPct = inv !== 0 ? ((pnl / inv) * 100).toFixed(2) : "0.00";
+      totalCurrent += ltp * qty;
+
+      const card = document.getElementById(`holding-${scrip}`);
+      card.classList.add(pnl >= 0 ? "green" : "red");
+      card.querySelector(".ltp-value").textContent = ltp.toFixed(2);
+      card.querySelector(".pnl-value").textContent = pnl.toFixed(2);
+      card.querySelector(".pnl-pct").textContent = pnlPct;
+    } catch (err) {
+      console.error(`Error fetching LTP for ${scrip}:`, err);
+    }
+  }
+
+  document.getElementById("holding_totCurrent").textContent =
+    "Current ₹ " + totalCurrent.toFixed(2);
+  document.getElementById("holding_totpnl").textContent = (
+    totalCurrent - totalInvested
+  ).toFixed(2);
+  const pnlPercent = totalInvested
+    ? (((totalCurrent - totalInvested) / totalInvested) * 100).toFixed(2)
+    : "0.00";
+  document.getElementById("holding_totpnlprcnt").textContent =
+    "(" + pnlPercent + "%)";
+}
+
+/*import { fetchData } from "./fetchPrice.js";
+import {
+  doc,
+  getDoc,
   increment,
   updateDoc,
 } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-firestore.js";
@@ -69,7 +164,7 @@ export async function showHoldings(email) {
 
   // Render orders
   order_add_cards.innerHTML = "";
-  ordersList = orders || [];
+  ordersList = orders.sort() || [];
   const savedPage = parseInt(localStorage.getItem("orders_current_page")) || 1;
   currentOrderPage = Math.min(
     savedPage,
@@ -119,3 +214,4 @@ async function updateLTPsForHoldings(holdingList, totalInvested) {
   document.getElementById("holding_totpnlprcnt").textContent =
     "(" + pnlPercent + "%)";
 }
+*/

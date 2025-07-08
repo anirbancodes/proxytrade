@@ -45,6 +45,7 @@ place_buy.addEventListener("click", async () => {
     inv: inv + investment,
     orders: arrayUnion({ [scrip]: ["b", qty, price, time] }),
   });
+  document.getElementById("place_order_qty").value;
 
   showHoldings(user.email);
 });
@@ -87,6 +88,7 @@ place_sell.addEventListener("click", async () => {
   else updates[`holding.${scrip}`] = [newQty, avg];
 
   await updateDoc(ref, updates);
+  document.getElementById("place_order_qty").value;
   showHoldings(user.email);
 });
 
