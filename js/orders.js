@@ -1,5 +1,5 @@
-// orders.js
 import { order_add_cards } from "./ui.js";
+import { fetchData } from "./fetchPrice.js";
 
 let ordersList = [];
 let currentOrderPage = 1;
@@ -24,10 +24,15 @@ export function renderOrdersPage(page) {
   const paginatedOrders = ordersList.slice(start, end);
 
   order_add_cards.innerHTML = "";
-  paginatedOrders.forEach((order) => {
+  paginatedOrders.forEach(async (order) => {
     const name = Object.keys(order)[0];
     const [type, qty, avg, time] = order[name];
-    showEachOrder(name, type, qty, avg, time);
+    if (!document.getElementById(`order-${name}-${time}`)) {
+      const ltpData = await fetchData(name);
+      showEachOrder(name, type, qty, avg, time, ltpData.ltp);
+    } else {
+      showEachOrder(name, type, qty, avg, time);
+    }
   });
 
   renderOrderPaginationControls(page);
