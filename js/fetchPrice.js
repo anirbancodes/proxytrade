@@ -1,27 +1,20 @@
-async function fetchData(scrip) {
+export async function fetchData(scrip) {
   let apiData;
-  await fetch("https://stock.api.anirban.pro/" + scrip)
-    .then((res) => res.json())
-    .then((res) => {
-      // let [ltp,name,pC,dL,dH,yL,yH,mC,pe,dY,pEx]= res;
 
-      apiData = res;
-      apiData.ltp = apiData.ltp.replaceAll(",", "");
-    })
-    .catch(async (err) => {
-      await fetch("https://stock.api.stoxic.one/" + scrip)
-        .then((res) => res.json())
-        .then((res) => {
-          apiData = res;
-          apiData.ltp = apiData.ltp.replaceAll(",", "");
-          // time = res.time;
-          // date = res.date;
-          // hms = [res.hr, res.min, res.sec, res.ampm];
-        });
-    })
-    .catch(async (err) => {
+  try {
+    const res1 = await fetch("https://stock.api.anirban.pro/" + scrip);
+    const data1 = await res1.json();
+    data1.ltp = data1.ltp.replaceAll(",", "");
+    apiData = data1;
+  } catch (err1) {
+    try {
+      const res2 = await fetch("https://stock.api.stoxic.one/" + scrip);
+      const data2 = await res2.json();
+      data2.ltp = data2.ltp.replaceAll(",", "");
+      apiData = data2;
+    } catch (err2) {
       apiData = {
-        ltp: 0,
+        ltp: "0",
         dH: 0,
         dL: 0,
         name: "Could not load",
@@ -29,9 +22,12 @@ async function fetchData(scrip) {
         yH: 0,
         pC: 0,
       };
-    });
+    }
+  }
+
   return apiData;
 }
+
 async function fetchIdx(idx) {
   let apiData;
   await fetch("https://stock.api.anirban.pro/" + idx)
