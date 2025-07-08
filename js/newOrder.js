@@ -9,7 +9,7 @@ import {
 } from "./firebase.js";
 import { showHoldings } from "./holdings.js";
 import { setupOrders } from "./orders.js";
-import { refreshUI } from "./refreshUI.js";
+import { refreshUIAfterOrder } from "./refreshUI.js";
 
 const place_buy = document.getElementById("place_buy");
 const place_sell = document.getElementById("place_sell");
@@ -50,7 +50,7 @@ place_buy.addEventListener("click", async () => {
   });
 
   document.getElementById("place_order_qty").value = "";
-  await refreshUI(user.email);
+  await refreshUIAfterOrder();
 
   setupOrders([newOrder, ...orders]);
 });
@@ -97,7 +97,7 @@ place_sell.addEventListener("click", async () => {
   await updateDoc(ref, updates);
 
   document.getElementById("place_order_qty").value = "";
-  await refreshUI(user.email);
+  await refreshUIAfterOrder();
 
   setupOrders([newOrder, ...orders]);
 });
