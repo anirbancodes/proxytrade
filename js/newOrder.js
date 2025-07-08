@@ -22,6 +22,7 @@ place_buy.addEventListener("click", async () => {
   const price = parseFloat(
     document.getElementById("place_order_price").innerText
   );
+  console.log(`"${scrip}"`, qty, price);
 
   if (!checkOrderValid(scrip, qty, price)) return;
 

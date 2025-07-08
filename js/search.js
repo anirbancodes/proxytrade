@@ -2746,7 +2746,7 @@ let stringS = ``;
 
 symbols.map((i) => {
   stringS += `<a class="dropdown-item" data-value="${i}">
- ${i}
+${i}
 </a>`;
 });
 console.log(stringS);
