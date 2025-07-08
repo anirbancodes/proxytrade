@@ -60,7 +60,7 @@ export async function showHoldings(email, reuseCache = false) {
 function holding_info(inv) {
   holding_add_cards.innerHTML = `
     <div class="holding-status">
-      <p id="holding_totInvested">Invested ₹ ${inv}</p>
+      <p id="holding_totInvested">Invested ₹ ${inv.toFixed(2)}</p>
       <p id="holding_totCurrent">Current ₹ </p>
       <p>P&L: <span id="holding_totpnl"></span> <span id="holding_totpnlprcnt"></span></p>
     </div>`;

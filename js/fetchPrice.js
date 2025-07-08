@@ -14,7 +14,7 @@ export async function fetchData(scrip) {
       apiData = data2;
     } catch (err2) {
       apiData = {
-        ltp: 1,
+        ltp: 0,
         dH: 0,
         dL: 0,
         name: "Could not load",
