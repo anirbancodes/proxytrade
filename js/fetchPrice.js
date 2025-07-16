@@ -28,27 +28,40 @@ export async function fetchData(scrip) {
   return apiData;
 }
 
-async function fetchIdx(idx) {
+export async function fetchIdx(region) {
   let apiData;
-  await fetch("https://stock.api.anirban.pro/" + idx)
-    .then((res) => res.json())
-    .then((res) => {
-      // let [ltp,name,pC,dL,dH,yL,yH,mC,pe,dY,pEx]= res;
-
-      apiData = res;
-      apiData.ltp = apiData.ltp.replaceAll(",", "");
-    })
-    .catch(async (err) => {
-      await fetch("https://stock.api.stoxic.one/" + idx)
-        .then((res) => res.json())
-        .then((res) => {
-          apiData = res;
-          apiData.ltp = apiData.ltp.replaceAll(",", "");
-          // time = res.time;
-          // date = res.date;
-          // hms = [res.hr, res.min, res.sec, res.ampm];
-        });
-    });
+  let url1 = "https://stock.api.anirban.pro/GFinIdx";
+  let url2 = "https://stock.api.stoxic.one/GFinIdx";
+  if (region == "nse") {
+    url1 += "?c=nse";
+    url2 += "?c=nse";
+  }
+  try {
+    const res1 = await fetch(url1);
+    const data1 = await res1.json();
+    apiData = data1;
+  } catch (err1) {
+    try {
+      const res2 = await fetch(url2);
+      const data2 = await res2.json();
+      apiData = data2;
+    } catch (err2) {
+      apiData = {
+        nifty: {
+          ltp: 0,
+          pchP: 0,
+        },
+        niftybank: {
+          ltp: 0,
+          pchP: -0,
+        },
+        finnifty: {
+          ltp: 0,
+          pchP: 0,
+        },
+      };
+    }
+  }
   return apiData;
 }
 

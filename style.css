@@ -177,12 +177,37 @@ a {
   border-radius: 30px;
   padding: 5vh 4vw 5vh 4vw;
 }
+.ticker-card {
+  background-image: none;
+  padding: 0 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ticker-row > p {
+  line-height: 6px;
+}
+.refreshBtn {
+  padding: 4px 9px;
+  margin-top: 5px;
+}
+.flex-end {
+  display: flex;
+  justify-content: end;
+}
 .inner-card-body {
   display: flex;
   justify-content: center;
   flex-direction: column;
   align-items: center;
   color: white;
+}
+.ticker-row {
+  gap: 8px;
+  color: rgb(216, 152, 32);
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-between;
 }
 .inner-card h3 {
   color: white;
