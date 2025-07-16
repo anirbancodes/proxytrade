@@ -227,6 +227,7 @@ a {
   width: 100%;
   padding: 10px 0;
   position: relative;
+  margin-bottom: -20px;
 }
 .flowtext-content {
   display: inline-block;
@@ -234,7 +235,11 @@ a {
   padding-left: 100%;
   font-size: 14px;
   font-weight: 300;
-  animation: scroll-left 15s linear infinite;
+  animation: scroll-left 20s linear infinite;
+}
+.flowtext-content > span {
+  font-size: 15px;
+  font-weight: 400;
 }
 .flowtext-content:hover {
   animation-play-state: paused;
