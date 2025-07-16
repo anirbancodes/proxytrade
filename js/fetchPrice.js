@@ -64,6 +64,43 @@ export async function fetchIdx(region) {
   }
   return apiData;
 }
+export async function fetchCurrency() {
+  let apiData;
+  let url1 = "https://stock.api.anirban.pro/currency";
+  let url2 = "https://stock.api.stoxic.one/currency";
+
+  try {
+    const res1 = await fetch(url1);
+    const data1 = await res1.json();
+    apiData = data1;
+  } catch (err1) {
+    try {
+      const res2 = await fetch(url2);
+      const data2 = await res2.json();
+      apiData = data2;
+    } catch (err2) {
+      apiData = {
+        "USD-INR": {
+          ltp: 0,
+          pchP: 0,
+        },
+        "EUR-INR": {
+          ltp: 0,
+          pchP: -0,
+        },
+        "CNY-INR": {
+          ltp: 0,
+          pchP: 0,
+        },
+        "JPY-INR": {
+          ltp: 0,
+          pchP: 0,
+        },
+      };
+    }
+  }
+  return apiData;
+}
 
 /*Hi*/
 
