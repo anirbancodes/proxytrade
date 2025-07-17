@@ -189,7 +189,7 @@ a {
 }
 .refreshBtn {
   padding: 4px 9px;
-  margin-top: 5px;
+  /* margin-top: 5px; */
 }
 .flex-end {
   display: flex;
@@ -236,6 +236,9 @@ a {
   font-size: 14px;
   font-weight: 300;
   animation: scroll-left 20s linear infinite;
+}
+.flowtext-slow {
+  animation: scroll-left 30s linear infinite;
 }
 .flowtext-content > span {
   font-size: 15px;
