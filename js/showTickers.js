@@ -31,6 +31,7 @@ async function loadData(divId, func) {
     generateTickerText(nseIdxKeys) + `    ` + generateTickerText(nseIdxKeys);
 
   document.getElementById(divId).style.display = "";
+  document.getElementById("indexTickers").style.display = "";
 }
 /*
 async function loadNseIdx() {

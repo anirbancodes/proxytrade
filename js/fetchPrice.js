@@ -79,7 +79,7 @@ export async function fetchCurrency() {
       const data2 = await res2.json();
       apiData = data2;
     } catch (err2) {
-      alert(err2);
+      // alert(err2);
 
       apiData = {
         "USD-INR": {
