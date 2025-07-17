@@ -1,9 +1,38 @@
-/*  write a c program and print out the number which is divisble by 5 when user enter the starting and ending number and count it using loops.
- */
-
 import { fetchIdx, fetchCurrency } from "./fetchPrice.js";
 
-// alert("ji");
+let tempArr = [
+  { div: "ticker-nseIdx", func: fetchIdx("nse") },
+  { div: "ticker-globalIdx", func: fetchIdx() },
+  { div: "ticker-currency", func: fetchCurrency() },
+];
+
+for (let item of tempArr) {
+  loadData(item.div, item.func);
+}
+
+async function loadData(divId, func) {
+  let nseIdxData = await func;
+  let nseIdxKeys = Object.keys(nseIdxData);
+
+  const ticker = document.getElementById(divId);
+  function generateTickerText(data) {
+    return data
+      .map((i) => {
+        let color = nseIdxData[i].pchP >= 0 ? "green" : "red";
+        let arrow = nseIdxData[i].pchP >= 0 ? "&uparrow;" : "&downarrow;";
+
+        return `${i.toUpperCase()} <span style="color:${color}" >${
+          nseIdxData[i].ltp
+        } ${arrow} ${nseIdxData[i].pchP}%</span> `;
+      })
+      .join(`    `);
+  }
+  ticker.innerHTML =
+    generateTickerText(nseIdxKeys) + `    ` + generateTickerText(nseIdxKeys);
+
+  document.getElementById(divId).style.display = "";
+}
+/*
 async function loadNseIdx() {
   let nseIdxData = await fetchIdx("nse");
   let nseIdxKeys = Object.keys(nseIdxData);
@@ -26,18 +55,8 @@ async function loadNseIdx() {
   ticker.innerHTML =
     generateTickerText(nseIdxKeys) + `    ` + generateTickerText(nseIdxKeys);
 
-  /*  for (let i of nseIdxKeys) {
-      let color = nseIdxData[i].pchP >= 0 ? "green" : "red";
-      let arrow = nseIdxData[i].pchP >= 0 ? "&uparrow;" : "&downarrow;";
-      tickerNseIdxDiv.innerHTML += `<p>
-             ${i.toUpperCase()} <span style="color: ${color}">
-            ${nseIdxData[i].ltp}
-             ${arrow}
-            ${nseIdxData[i].pchP}
-            %</span>
-            </p>`;
-    } */
-  document.getElementById("indexTickers").style.display = "";
+
+ document.getElementById("indexTickers").style.display = "";
   document.getElementById("ticker-nseIdx").style.display = "";
 }
 async function loadCurrency() {
@@ -66,8 +85,6 @@ async function loadCurrency() {
 async function loadGlobalIdx() {
   let nseIdxData = await fetchIdx();
   let nseIdxKeys = Object.keys(nseIdxData);
-  //   let tickerNseIdxDiv = document.getElementById("ticker-nseIdx");
-  //   tickerNseIdxDiv.innerHTML = "";
 
   const ticker = document.getElementById("ticker-globalIdx");
   function generateTickerText(data) {
@@ -85,7 +102,14 @@ async function loadGlobalIdx() {
   ticker.innerHTML =
     generateTickerText(nseIdxKeys) + `    ` + generateTickerText(nseIdxKeys);
 
-  /*  for (let i of nseIdxKeys) {
+  document.getElementById("ticker-globalIdx").style.display = "";
+}
+*/
+// loadNseIdx();
+// loadCurrency();
+// loadGlobalIdx();
+
+/*  for (let i of nseIdxKeys) {
       let color = nseIdxData[i].pchP >= 0 ? "green" : "red";
       let arrow = nseIdxData[i].pchP >= 0 ? "&uparrow;" : "&downarrow;";
       tickerNseIdxDiv.innerHTML += `<p>
@@ -96,9 +120,3 @@ async function loadGlobalIdx() {
             %</span>
             </p>`;
     } */
-
-  document.getElementById("ticker-globalIdx").style.display = "";
-}
-loadNseIdx();
-loadCurrency();
-loadGlobalIdx();
